@@ -73,11 +73,12 @@
 
           <div class="card bg-glass">
             <div class="card-body px-4 py-5 px-md-5">
-              <form>
 
+
+              <form action="/demo" method="POST" enctype="multipart/form-data">
                 <!-- File input -->
                 <div class="form-outline mb-md-4">
-
+                    @csrf
                     <label for="formFileLg" class="form-label mb-4"style="font-weight: bold;font-size:30px;">
                         <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-file-earmark-text" viewBox="0 0 16 16">
                             <path d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5zm0 2a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5z"/>
@@ -85,14 +86,14 @@
                         </svg>
                       Choose a File:
                     </label>
-                    <input class="form-control form-control-lg" id="formFileLg" type="file">
+                    <input class="form-control form-control-lg" name="file" id="formFileLg" type="file">
 
                 </div>
 
                 <!-- Submit button -->
                 <div class="d-grid gap-2">
                     <button type="submit" class="btn btn-primary shadow rounded">Post</button>
-                    <button class="btn btn-outline-primary" type="button">Get</button>
+                    {{-- <button class="btn btn-outline-primary" type="button">Get</button> --}}
                 </div>
 
               </form>
