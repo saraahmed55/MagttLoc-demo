@@ -15,6 +15,10 @@ class CreateMagttLocTable extends Migration
     {
         Schema::create('magtt_loc', function (Blueprint $table) {
             $table->id();
+            $table->string('predicted_x_distance');
+            $table->string('predicted_y_distance');
+            $table->string('actual_x_distance');
+            $table->string('actual_y_distance');
             $table->timestamps();
         });
     }
