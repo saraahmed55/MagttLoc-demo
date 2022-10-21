@@ -15,7 +15,7 @@ class demoController extends Controller
     }
     public function getPoints()
     {
-        $data = DB::table('magtt_loc')->select('id','predicted_x_distance','predicted_y_distance','actual_x_distance','actual_y_distance')->get();
+        $data = DB::table('magtt_loc')->select('id','predicted_x_distance','predicted_y_distance','actual_x_distance','actual_y_distance')->paginate(10);
 
         return view('points')->with('data', $data);
     }
