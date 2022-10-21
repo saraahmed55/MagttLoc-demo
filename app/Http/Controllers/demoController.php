@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Imports\DataImport;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
 
 class demoController extends Controller
@@ -12,32 +13,17 @@ class demoController extends Controller
     {
         return $req->input();
     }
+    public function getPoints()
+    {
+        $data = DB::table('magtt_loc')->select('id','predicted_x_distance','predicted_y_distance','actual_x_distance','actual_y_distance')->get();
 
-    // function csvToArray($filename = '', $delimiter = ',')
-    // {
-    //     if (!file_exists($filename) || !is_readable($filename))
-    //         return false;
-
-    //     $header = null;
-    //     $data = array();
-    //     if (($handle = fopen($filename, 'r')) !== false)
-    //     {
-    //         while (($row = fgetcsv($handle, 1000, $delimiter)) !== false)
-    //         {
-    //             if (!$header)
-    //                 $header = $row;
-    //             else
-    //                 $data[] = array_combine($header, $row);
-    //         }
-    //         fclose($handle);
-    //     }
-
-    //     return $data;
-    // }
+        return view('points')->with('data', $data);
+    }
 
     public function uploadData(Request $request)
     {
         Excel::import(new DataImport,$request->file);
-        return redirect()->route('demo')->with('success', 'Data Imported Successfully');
+        // return redirect()->route('demo')->with('success', 'Data Imported Successfully');
+        return redirect()->back()->with('message', 'Data Saved Sucessfully!!');
     }
 }

@@ -20,5 +20,9 @@ Route::get('/', function () {
 Route::get('/demo', function () {
     return view('demo');
 });
+// Route::get('/points', function () {
+//     return view('points');
+// });
+Route::get('/points',[demoController::class,'getPoints']);
 
 Route::post('/demo',[demoController::class,'uploadData']);

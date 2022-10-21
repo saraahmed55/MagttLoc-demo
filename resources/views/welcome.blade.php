@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Demo</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
-
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+    <script type="text/javascript" src="js/app.js"></script>
   </head>
 
   <body>
@@ -55,6 +56,7 @@
 
     <div class="container px-4 py-5 px-md-5 text-center text-lg-start my-5">
       <div class="row gx-lg-5 align-items-center mb-5">
+
         <div class="col-lg-6 mb-5 mb-lg-0" style="z-index: 10">
           <h1 class="my-4 display-6 fw-bold ls-tight" style="color: hsl(218, 81%, 95%)">
             MagttLoc:  <br />
@@ -73,9 +75,15 @@
 
           <div class="card bg-glass">
             <div class="card-body px-4 py-5 px-md-5">
+            @if(session()->has('message'))
+                <div class="alert alert-success"id="success-alert">
+                    {{ session()->get('message') }}
+                    <button type="button" style="margin-left: 35%" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            @endif
 
 
-              <form action="/demo" method="POST" enctype="multipart/form-data">
+              <form name="myForm"onsubmit="return validateForm()" action="/points" method="POST" enctype="multipart/form-data">
                 <!-- File input -->
                 <div class="form-outline mb-md-4">
                     @csrf
@@ -86,28 +94,23 @@
                         </svg>
                       Choose a File:
                     </label>
-                    <input class="form-control form-control-lg" name="file" id="formFileLg" type="file">
-
+                    <input class="form-control form-control-lg " name="file" id="formFileLg" type="file" required>
                 </div>
-
                 <!-- Submit button -->
                 <div class="d-grid gap-2">
                     <button type="submit" class="btn btn-primary shadow rounded">Post</button>
-                    {{-- <button class="btn btn-outline-primary" type="button">Get</button> --}}
+                    <a href="/points" style="text-decoration:none;"><button class="btn btn-outline-primary" type="button">Get Points</button></a>
                 </div>
-
               </form>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </section>
+</section>
   <!-- Section: Design Block -->
-
-
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.min.js" integrity="sha384-IDwe1+LCz02ROU9k972gdyvl+AESN10+x7tBKgc9I5HFtuNz0wWnPclzo6p9vxnk" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
-  </body>
+</body>
 </html>
