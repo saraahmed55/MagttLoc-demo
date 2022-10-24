@@ -23,6 +23,7 @@
     "dependencies": {
         "bootstrap": "^5.2.2",
         "sass": "^1.55.0",
-        "sass-loader": "^13.1.0"
+        "sass-loader": "^13.1.0",
+        "xhr2": "^0.2.1"
     }
 }

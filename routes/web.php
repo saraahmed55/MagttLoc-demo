@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\demoController;
+use App\Http\Controllers\javascrpitController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,9 +21,17 @@ Route::get('/', function () {
 Route::get('/demo', function () {
     return view('demo');
 });
-// Route::get('/points', function () {
-//     return view('points');
-// });
+Route::get('/test', function () {
+    return view('test');
+});
+
+
 Route::get('/points',[demoController::class,'getPoints']);
 
 Route::post('/demo',[demoController::class,'uploadData']);
+
+// Route::get('/test-points',[demoController::class,'showPointsforJS']);
+Route::get('/test-points',[demoController::class,'showRealPoint']);
+
+
+

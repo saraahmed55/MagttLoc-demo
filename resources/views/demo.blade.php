@@ -7,6 +7,6 @@
     <title>Indoor Localization</title>
 </head>
 <body>
-<img src="" alt="">
+<img src="{{ asset('img/layout_emp.png') }}" alt="Floor Plan"style="width:37cm;height:17cm">
 </body>
 </html>
