@@ -84,7 +84,7 @@
                 @endif
 
 
-                <form name="myForm"onsubmit="return validateForm()" action="/points" method="POST" enctype="multipart/form-data">
+                <form name="myForm"onsubmit="return validateForm()" action="/demo" method="POST" enctype="multipart/form-data">
                     <!-- File input -->
                     <div class="form-outline mb-md-4">
                         @csrf
@@ -100,8 +100,8 @@
                     <!-- Submit button -->
                     <div class="d-grid gap-2">
                         <button type="submit" class="btn btn-primary shadow rounded">Post</button>
-                        <a href="/points" style="text-decoration:none;"><button class="btn btn-outline-primary" type="button">Get Points</button></a>
-                        <a href="/points" style="text-decoration:none;"><button class="btn btn-outline-success" type="button">Start Demo</button></a>
+                        <a href="/points" style="text-decoration:none;"><button class="btn btn-outline-primary" style="width:100%" type="button">Get Points</button></a>
+                        <a href="/demo" style="text-decoration:none;"><button class="btn btn-outline-success" style="width:100%" type="button">Start Demo</button></a>
                     </div>
                 </form>
                 </div>

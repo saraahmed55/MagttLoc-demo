@@ -7,6 +7,6 @@
     <title>Indoor Localization</title>
 </head>
 <body>
-<h1>demmoooo page</h1>
+<img src="" alt="">
 </body>
 </html>

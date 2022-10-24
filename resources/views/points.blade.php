@@ -82,10 +82,9 @@
                             <td>{{ $data->predicted_y_distance }}</td>
                             <td>{{ $data->actual_x_distance }}</td>
                             <td>{{ $data->actual_y_distance }}</td>
-
                             </tr>
                         @endforeach
-                        
+
                     </tbody>
                 </table>
             </div>
