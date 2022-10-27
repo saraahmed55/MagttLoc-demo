@@ -55,28 +55,72 @@
                     url:"test-points",
                     dataType:"json",
                     success:function(response){
-                        $.each(response.data,function(key,item){
-                            
-                            var Actual_X_cm=parseFloat(item.actual_x_distance)/100;
-                            var Actual_Y_cm=parseFloat(item.actual_y_distance)/100;
+                            var count=0;
+                            var arrActualX=[];
+                            var arrActualY=[];
 
-                            var Predicted_X_cm=parseFloat(item.predicted_x_distance)/100;
-                            var Predicted_Y_cm=parseFloat(item.predicted_y_distance)/100;
+                            $.each(response.data,function(key,item){
 
-                            var Actual_X_px=(96 * Actual_X_cm)/2.54;
-                            var Actual_Y_px=(96 * Actual_Y_cm)/2.54;
+                                ++count;
+                                console.log(count)
+                                var Actual_X_cm=parseFloat(item.actual_x_distance)/100;
+                                var Actual_Y_cm=parseFloat(item.actual_y_distance)/100;
 
-                            var Predicted_X_px=(96 * Predicted_X_cm)/2.54;
-                            var Predicted_Y_px=(96 * Predicted_Y_cm)/2.54;
+                                var Predicted_X_cm=parseFloat(item.predicted_x_distance)/100;
+                                var Predicted_Y_cm=parseFloat(item.predicted_y_distance)/100;
+
+                                var Actual_X_px=(96 * Actual_X_cm)/2.54;
+                                var Actual_Y_px=(96 * Actual_Y_cm)/2.54;
+
+                                var Predicted_X_px=(96 * Predicted_X_cm)/2.54;
+                                var Predicted_Y_px=(96 * Predicted_Y_cm)/2.54;
+
+                                    if( count == 1){
+                                        AX=Actual_X_px;
+                                        AY=Actual_Y_px;
+
+                                        PX=Predicted_X_px;
+                                        PY=Predicted_Y_px;
+                                    }else{
+                                        ctx.beginPath();
+                                        ctx.lineWidth = 5;
+                                        ctx.strokeStyle = 'blue';
+                                        ctx.moveTo(AX,AY);
+                                        ctx.lineTo(Actual_X_px,Actual_Y_px);
+                                        ctx.stroke();
+                                        ctx.beginPath();
+                                        ctx.lineWidth = 7;
+                                        ctx.strokeStyle = 'red';
+                                        ctx.moveTo(PX,PY);
+                                        ctx.lineTo(Predicted_X_px,Predicted_Y_px);
+                                        ctx.stroke();
+
+                                    }
+
+                                setTimeout(function() {
+                                    drawPoint(ctx, Actual_X_px,Actual_Y_px, 'blue', 4);
+                                    drawPoint(ctx, Predicted_X_px,Predicted_Y_px, 'red', 4);
+                                }, 2000);
+
+                                AX=Actual_X_px;
+                                AY=Actual_Y_px;
+                                PX=Predicted_X_px;
+                                PY=Predicted_Y_px;
 
 
-                            setTimeout(function() {
-                                drawPoint(ctx, Actual_X_px,Actual_Y_px, 'blue', 4);
-                                drawPoint(ctx, Predicted_X_px,Predicted_Y_px, 'red', 4);
-                            }, 2000);
 
-                            // $('body').append('<h6>'+firstA+" ___________ "+secoundA+'</h6>')
-                        });
+                                // if(count==1){
+                                //     s=Actual_X_px;
+                                //     a=Actual_Y_px;
+                                //     ctx.beginPath();
+                                //     ctx.moveTo(s,a);
+                                // }else if(count>1){
+                                //     ctx.quadraticCurveTo(20,10,Actual_X_px,Actual_Y_px);
+                                //     ctx.stroke();
+                                // }
+
+                                // $('body').append('<h6>'+firstA+" ___________ "+secoundA+'</h6>')
+                            });
                     }
                 });
             }
