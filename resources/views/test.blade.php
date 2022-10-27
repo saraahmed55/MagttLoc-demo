@@ -5,12 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>Demo</title>
     <style>
         #canvas{
-
             background-image: url("img/layout_emp.png");
-            /* background-position: center; */
             background-size: 100% 100%;
         }
     </style>
@@ -106,19 +104,6 @@
                                 AY=Actual_Y_px;
                                 PX=Predicted_X_px;
                                 PY=Predicted_Y_px;
-
-
-
-                                // if(count==1){
-                                //     s=Actual_X_px;
-                                //     a=Actual_Y_px;
-                                //     ctx.beginPath();
-                                //     ctx.moveTo(s,a);
-                                // }else if(count>1){
-                                //     ctx.quadraticCurveTo(20,10,Actual_X_px,Actual_Y_px);
-                                //     ctx.stroke();
-                                // }
-
                                 // $('body').append('<h6>'+firstA+" ___________ "+secoundA+'</h6>')
                             });
                     }
