@@ -19,7 +19,7 @@
         box-shadow: 5px 10px 18px #888888;
         padding-top: 20px;
         padding-right: 25px;
-        height: 350px;
+        height: 200px;
        }
     </style>
 
@@ -29,10 +29,15 @@
         <div class="row position-relative">
             <div class="col-11" ><canvas id="canvas"></canvas></div>
             <div class="col-1 position-absolute top-0 end-0" id="box">
-                <div class="d-grid gap-2">
-                    <button class="btn btn-outline-secondary" id="points" style="width: 100%" type="button">Points</button>
-                    <button class="btn btn-outline-success" id="trace" style="width: 100%" type="button">Trace</button>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="points">
+                    <label class="form-check-label" for="points">Points</label>
                 </div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="trace">
+                    <label class="form-check-label" for="trace">Trace</label>
+                </div>
+                <button class="btn btn-outline-success"id="start" style="width: 100%;margin-top:20px;" type="button">Start</button>
             </div>
         </div>
     </div>
@@ -43,12 +48,12 @@
     <script>
         $(document).ready(function(){
 
-            var btnPoints = document.getElementById("points");
-            btnPoints.addEventListener("click",   fetchDataPoints);
+            var points=document.getElementById("points");
+            var trace=document.getElementById("trace");
 
-            var btnTrace = document.getElementById("trace");
-            btnTrace.addEventListener("click",   fetchDataTrace);
 
+            var btnStart = document.getElementById("start");
+            btnStart.addEventListener("click",   Start);
 
             const canvas=document.querySelector("#canvas");
             const ctx=canvas.getContext("2d");
@@ -58,6 +63,21 @@
 
             document.body.appendChild(canvas);
             ctx.clearRect( 0, 0, ctx.canvas.width, ctx.canvas.height);
+
+            function Start(){
+                if(points.checked==true){
+                    fetchDataPoints();
+                }else if(trace.checked==true)
+                {
+                    fetchDataTrace();
+                }else{
+                    fetchDataPoints();
+                    setTimeout(function() {
+                        fetchDataTrace();
+                    }, 2000);
+                }
+            }
+
 
             function drawPoint(context, x, y, color, size) {
 
@@ -120,69 +140,72 @@
             }
 
             function fetchDataTrace(){
+                var arrActualX=[];
                 $.ajax({
                     type:"GET",
                     url:"test-points",
                     dataType:"json",
                     success:function(response){
-                            var count=0;
-                            var arrActualX=[];
-                            var arrActualY=[];
-                            $.each(response.data,function(key,item){
+                        var count=0;
+                        $.each(response.data,function(key,item){
 
-                                ++count;
-                                var Actual_X_cm=parseFloat(item.actual_x_distance)/100;
-                                var Actual_Y_cm=parseFloat(item.actual_y_distance)/100;
+                            ++count;
+                            var Actual_X_cm=parseFloat(item.actual_x_distance)/100;
+                            var Actual_Y_cm=parseFloat(item.actual_y_distance)/100;
 
-                                var Predicted_X_cm=parseFloat(item.predicted_x_distance)/100;
-                                var Predicted_Y_cm=parseFloat(item.predicted_y_distance)/100;
+                            var Predicted_X_cm=parseFloat(item.predicted_x_distance)/100;
+                            var Predicted_Y_cm=parseFloat(item.predicted_y_distance)/100;
 
-                                var Actual_X_px=(96 * Actual_X_cm)/2.54;
-                                var Actual_Y_px=(96 * Actual_Y_cm)/2.54;
+                            var Actual_X_px=(96 * Actual_X_cm)/2.54;
+                            var Actual_Y_px=(96 * Actual_Y_cm)/2.54;
 
-                                var Predicted_X_px=(96 * Predicted_X_cm)/2.54;
-                                var Predicted_Y_px=(96 * Predicted_Y_cm)/2.54;
+                            var Predicted_X_px=(96 * Predicted_X_cm)/2.54;
+                            var Predicted_Y_px=(96 * Predicted_Y_cm)/2.54;
 
-                                    if( count == 1){
-                                        AX=Actual_X_px;
-                                        AY=Actual_Y_px;
+                            arrActualX.push({x:Actual_X_px,y:Actual_Y_px});
 
-                                        PX=Predicted_X_px;
-                                        PY=Predicted_Y_px;
-                                    }else{
-                                        ctx.beginPath();
-                                        ctx.lineWidth = 5;
-                                        ctx.strokeStyle = 'blue';
-                                        ctx.moveTo(AX,AY);
-                                        ctx.lineTo(Actual_X_px,Actual_Y_px);
-                                        ctx.stroke();
-                                        ctx.beginPath();
-                                        ctx.lineWidth = 7;
-                                        ctx.strokeStyle = 'red';
-                                        ctx.moveTo(PX,PY);
-                                        ctx.lineTo(Predicted_X_px,Predicted_Y_px);
-                                        ctx.stroke();
 
-                                    }
-
-                                setTimeout(function() {
-                                    drawPoint(ctx, Actual_X_px,Actual_Y_px, 'blue', 4);
-                                    drawPoint(ctx, Predicted_X_px,Predicted_Y_px, 'red', 4);
-                                }, 2000);
-
+                            if( count == 1){
                                 AX=Actual_X_px;
                                 AY=Actual_Y_px;
+
                                 PX=Predicted_X_px;
                                 PY=Predicted_Y_px;
-                                // $('body').append('<h6>'+firstA+" ___________ "+secoundA+'</h6>')
-                            });
+                            }else{
+
+                                ctx.beginPath();
+                                ctx.lineWidth = 5;
+                                ctx.strokeStyle = 'blue';
+                                ctx.moveTo(AX,AY);
+                                ctx.lineTo(Actual_X_px,Actual_Y_px);
+                                ctx.stroke();
+                                ctx.beginPath();
+                                ctx.lineWidth = 7;
+                                ctx.strokeStyle = 'red';
+                                ctx.moveTo(PX,PY);
+                                ctx.lineTo(Predicted_X_px,Predicted_Y_px);
+                                ctx.stroke();
+
+                            }
+
+                            setTimeout(function() {
+                                drawPoint(ctx, Actual_X_px,Actual_Y_px, 'blue', 4);
+                                drawPoint(ctx, Predicted_X_px,Predicted_Y_px, 'red', 4);
+                            }, 1000);
+
+                            AX=Actual_X_px;
+                            AY=Actual_Y_px;
+                            PX=Predicted_X_px;
+                            PY=Predicted_Y_px;
+                        });
                     }
                 });
             }
+
+
         });
     </script>
 
 </body>
 </html>
-
 
