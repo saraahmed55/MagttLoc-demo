@@ -248,6 +248,8 @@
             }
 
 
+            const dataTraceA=[];
+            const dataTraceP=[]
             function fetchDataTrace(){
                 var arrActualX=[];
                 $.ajax({
@@ -258,7 +260,6 @@
                         var count=0;
                         $.each(response.data,function(key,item){
 
-                            ++count;
                             var Actual_X_cm=parseFloat(item.actual_x_distance)/100;
                             var Actual_Y_cm=parseFloat(item.actual_y_distance)/100;
 
@@ -273,43 +274,75 @@
 
                             arrActualX.push({x:Actual_X_px,y:Actual_Y_px});
 
+                            dataTraceA[count]={x:Actual_X_px,y:Actual_Y_px};
+                            dataTraceP[count]={x:Predicted_X_px,y:Predicted_Y_px};
+                            ++count;
 
-                            if( count == 1){
-                                AX=Actual_X_px;
-                                AY=Actual_Y_px;
+                            // setTimeout(function() {
+                            //     drawPoint(ctx, Actual_X_px,Actual_Y_px, 'blue', 2);
+                            //     drawPoint(ctx, Predicted_X_px,Predicted_Y_px, 'green', 2);
+                            // }, 1000);
 
-                                PX=Predicted_X_px;
-                                PY=Predicted_Y_px;
-                            }else{
-
-                                ctx.beginPath();
-                                ctx.lineWidth = 3;
-                                ctx.strokeStyle = 'blue';
-                                ctx.moveTo(AX,AY);
-                                ctx.lineTo(Actual_X_px,Actual_Y_px);
-                                ctx.stroke();
-                                ctx.beginPath();
-                                ctx.lineWidth = 3;
-                                ctx.strokeStyle = 'green';
-                                ctx.moveTo(PX,PY);
-                                ctx.lineTo(Predicted_X_px,Predicted_Y_px);
-                                ctx.stroke();
-
-                            }
-
-                            setTimeout(function() {
-                                drawPoint(ctx, Actual_X_px,Actual_Y_px, 'blue', 2);
-                                drawPoint(ctx, Predicted_X_px,Predicted_Y_px, 'green', 2);
-                            }, 1000);
-
-                            AX=Actual_X_px;
-                            AY=Actual_Y_px;
-                            PX=Predicted_X_px;
-                            PY=Predicted_Y_px;
                         });
                     }
                 });
+                smothingfetchDataTrace();
             }
+            function smothingfetchDataTrace(){
+                $.ajax({
+                    type:"GET",
+                    url:"test-points",
+                    dataType:"json",
+                    success:function(response){
+                        for(var i=2;i<dataTraceA.length;i++){
+                            var at0=dataTraceA[i-2];
+                            var at1=dataTraceA[i-1];
+                            var at2=dataTraceA[i];
+                            var ax=(at0.x+at1.x+at2.x)/3;
+                            var ay=(at0.y+at1.y+at2.y)/3;
+
+                            var pt0=dataTraceP[i-2];
+                            var pt1=dataTraceP[i-1];
+                            var pt2=dataTraceP[i];
+                            var px=(pt0.x+pt1.x+pt2.x)/3;
+                            var py=(pt0.y+pt1.y+pt2.y)/3;
+
+                            dataTraceA[i-1]={x:ax,y:ay};
+                            dataTraceP[i-1]={x:px,y:py};
+                        }
+
+                    }
+                });
+                $.ajax({
+                    type:"GET",
+                    url:"test-points",
+                    dataType:"json",
+                    success:function(response){
+                        for(var t=1;t<dataTraceA.length;t++){
+                            ctx.beginPath();
+                            ctx.lineWidth = 3;
+                            ctx.strokeStyle = 'blue';
+                            ctx.lineCap = "round";
+                            ctx.moveTo(dataTraceA[t-1].x,dataTraceA[t-1].y);
+                            ctx.lineTo(dataTraceA[t].x,dataTraceA[t].y);
+                            ctx.stroke();
+
+                            ctx.beginPath();
+                            ctx.lineWidth = 3;
+                            ctx.strokeStyle = 'green';
+                            ctx.lineCap = "round";
+                            ctx.moveTo(dataTraceP[t-1].x,dataTraceP[t-1].y);
+                            ctx.lineTo(dataTraceP[t].x,dataTraceP[t].y);
+                            ctx.stroke();
+                        }
+                    }
+                });
+            }
+
+
+
+            const dataTrace2A=[];
+            const dataTrace2P=[]
             function fetchDataTrace2(){
                 $.ajax({
                     type:"GET",
@@ -319,7 +352,6 @@
                         var count=0;
                         $.each(response.data,function(key,item){
 
-                            ++count;
                             var Actual_X_cm=parseFloat(item.actual_x_distance)/100;
                             var Actual_Y_cm=parseFloat(item.actual_y_distance)/100;
 
@@ -332,42 +364,69 @@
                             var Predicted_X_px=(96 * Predicted_X_cm)/2.54;
                             var Predicted_Y_px=(96 * Predicted_Y_cm)/2.54;
 
-                            if( count == 1){
-                                AX=Actual_X_px;
-                                AY=Actual_Y_px;
+                            dataTrace2A[count]={x:Actual_X_px,y:Actual_Y_px};
+                            dataTrace2P[count]={x:Predicted_X_px,y:Predicted_Y_px};
+                            ++count;
 
-                                PX=Predicted_X_px;
-                                PY=Predicted_Y_px;
-                            }else{
-
-                                ctx.beginPath();
-                                ctx.lineWidth = 3;
-                                ctx.strokeStyle = 'blue';
-                                ctx.moveTo(AX,AY);
-                                ctx.lineTo(Actual_X_px,Actual_Y_px);
-                                ctx.stroke();
-                                ctx.beginPath();
-                                ctx.lineWidth = 3;
-                                ctx.strokeStyle = 'green';
-                                ctx.moveTo(PX,PY);
-                                ctx.lineTo(Predicted_X_px,Predicted_Y_px);
-                                ctx.stroke();
-
-                            }
-
-                            setTimeout(function() {
-                                drawPoint(ctx, Actual_X_px,Actual_Y_px, 'blue', 2);
-                                drawPoint(ctx, Predicted_X_px,Predicted_Y_px, 'green', 2);
-                            }, 1000);
-
-                            AX=Actual_X_px;
-                            AY=Actual_Y_px;
-                            PX=Predicted_X_px;
-                            PY=Predicted_Y_px;
                         });
                     }
                 });
+                smothingfetchDataTrace2();
             }
+            function smothingfetchDataTrace2(){
+                $.ajax({
+                    type:"GET",
+                    url:"test-trace1",
+                    dataType:"json",
+                    success:function(response){
+                        for(var i=2;i<dataTrace2A.length;i++){
+                            var at0=dataTrace2A[i-2];
+                            var at1=dataTrace2A[i-1];
+                            var at2=dataTrace2A[i];
+                            var ax=(at0.x+at1.x+at2.x)/3;
+                            var ay=(at0.y+at1.y+at2.y)/3;
+
+                            var pt0=dataTrace2P[i-2];
+                            var pt1=dataTrace2P[i-1];
+                            var pt2=dataTrace2P[i];
+                            var px=(pt0.x+pt1.x+pt2.x)/3;
+                            var py=(pt0.y+pt1.y+pt2.y)/3;
+
+                            dataTrace2A[i-1]={x:ax,y:ay};
+                            dataTrace2P[i-1]={x:px,y:py};
+                        }
+
+                    }
+                });
+                $.ajax({
+                    type:"GET",
+                    url:"test-trace1",
+                    dataType:"json",
+                    success:function(response){
+                        for(var t=1;t<dataTrace2A.length;t++){
+                            ctx.beginPath();
+                            ctx.lineWidth = 3;
+                            ctx.strokeStyle = 'blue';
+                            ctx.lineCap = "round";
+                            ctx.moveTo(dataTrace2A[t-1].x,dataTrace2A[t-1].y);
+                            ctx.lineTo(dataTrace2A[t].x,dataTrace2A[t].y);
+                            ctx.stroke();
+
+                            ctx.beginPath();
+                            ctx.lineWidth = 3;
+                            ctx.strokeStyle = 'green';
+                            ctx.lineCap = "round";
+                            ctx.moveTo(dataTrace2P[t-1].x,dataTrace2P[t-1].y);
+                            ctx.lineTo(dataTrace2P[t].x,dataTrace2P[t].y);
+                            ctx.stroke();
+                        }
+                    }
+                });
+            }
+
+
+
+
 
             const arrActualX=[];
             const arrPredicted=[];
@@ -407,16 +466,18 @@
                     url:"test-points",
                     dataType:"json",
                     success:function(response){
-                        for(var i=1;i<arrActualX.length;i++){
-                            var at0=arrActualX[i-1];
-                            var at1=arrActualX[i];
-                            var ax=(at0.x+at1.x)/2;
-                            var ay=(at0.y+at1.y)/2;
+                        for(var i=2;i<arrActualX.length;i++){
+                            var at0=arrActualX[i-2];
+                            var at1=arrActualX[i-1];
+                            var at2=arrActualX[i];
+                            var ax=(at0.x+at1.x+at2.x)/3;
+                            var ay=(at0.y+at1.y+at2.y)/3;
 
-                            var pt0=arrPredicted[i-1];
-                            var pt1=arrPredicted[i];
-                            var px=(pt0.x+pt1.x)/2;
-                            var py=(pt0.y+pt1.y)/2;
+                            var pt0=arrPredicted[i-2];
+                            var pt1=arrPredicted[i-1];
+                            var pt2=arrPredicted[i];
+                            var px=(pt0.x+pt1.x+pt2.x)/3;
+                            var py=(pt0.y+pt1.y+pt2.y)/3;
 
                             arrActualX[i-1]={x:ax,y:ay};
                             arrPredicted[i-1]={x:px,y:py};
@@ -466,6 +527,33 @@
                         });
                     }
                 });
+                smothingfetchDataTrace2Animation();
+            }
+            function smothingfetchDataTrace2Animation(){
+                $.ajax({
+                    type:"GET",
+                    url:"test-trace1",
+                    dataType:"json",
+                    success:function(response){
+                        for(var i=2;i<arrActual2.length;i++){
+                            var at0=arrActual2[i-2];
+                            var at1=arrActual2[i-1];
+                            var at2=arrActual2[i];
+                            var ax=(at0.x+at1.x+at2.x)/3;
+                            var ay=(at0.y+at1.y+at2.y)/3;
+
+                            var pt0=arrPredicted2[i-2];
+                            var pt1=arrPredicted2[i-1];
+                            var pt2=arrPredicted2[i];
+                            var px=(pt0.x+pt1.x+pt2.x)/3;
+                            var py=(pt0.y+pt1.y+pt2.y)/3;
+
+                            arrActual2[i-1]={x:ax,y:ay};
+                            arrPredicted2[i-1]={x:px,y:py};
+                        }
+
+                    }
+                });
                 $.ajax({
                     type:"GET",
                     url:"test-trace1",
@@ -475,7 +563,6 @@
                         animatepredicted2();
                     }
                 });
-
             }
 
 
@@ -508,6 +595,33 @@
                         });
                     }
                 });
+                smothingfetchDataTraceAnimationPoints();
+            }
+            function smothingfetchDataTraceAnimationPoints(){
+                $.ajax({
+                    type:"GET",
+                    url:"test-points",
+                    dataType:"json",
+                    success:function(response){
+                        for(var i=2;i<arrActualPoints.length;i++){
+                            var at0=arrActualPoints[i-2];
+                            var at1=arrActualPoints[i-1];
+                            var at2=arrActualPoints[i];
+                            var ax=(at0.x+at1.x+at2.x)/3;
+                            var ay=(at0.y+at1.y+at2.y)/3;
+
+                            var pt0=arrPredictedPoints[i-2];
+                            var pt1=arrPredictedPoints[i-1];
+                            var pt2=arrPredictedPoints[i];
+                            var px=(pt0.x+pt1.x+pt2.x)/3;
+                            var py=(pt0.y+pt1.y+pt2.y)/3;
+
+                            arrActualPoints[i-1]={x:ax,y:ay};
+                            arrPredictedPoints[i-1]={x:px,y:py};
+                        }
+
+                    }
+                });
                 $.ajax({
                     type:"GET",
                     url:"test-points",
@@ -517,8 +631,11 @@
                         animatepredictedPoint();
                     }
                 });
-
             }
+
+
+
+
             const arrActual2Points=[];
             const arrPredicted2Points=[];
             function fetchDataTrace2AnimationPoints(){
@@ -548,6 +665,33 @@
                         });
                     }
                 });
+                smothingfetchDataTrace2AnimationPoints();
+            }
+            function smothingfetchDataTrace2AnimationPoints(){
+                $.ajax({
+                    type:"GET",
+                    url:"test-trace1",
+                    dataType:"json",
+                    success:function(response){
+                        for(var i=2;i<arrActual2Points.length;i++){
+                            var at0=arrActual2Points[i-2];
+                            var at1=arrActual2Points[i-1];
+                            var at2=arrActual2Points[i];
+                            var ax=(at0.x+at1.x+at2.x)/3;
+                            var ay=(at0.y+at1.y+at2.y)/3;
+
+                            var pt0=arrPredicted2Points[i-2];
+                            var pt1=arrPredicted2Points[i-1];
+                            var pt2=arrPredicted2Points[i];
+                            var px=(pt0.x+pt1.x+pt2.x)/3;
+                            var py=(pt0.y+pt1.y+pt2.y)/3;
+
+                            arrActual2Points[i-1]={x:ax,y:ay};
+                            arrPredicted2Points[i-1]={x:px,y:py};
+                        }
+
+                    }
+                });
                 $.ajax({
                     type:"GET",
                     url:"test-trace1",
@@ -557,7 +701,6 @@
                         animatepredicted2Point();
                     }
                 });
-
             }
 
 
@@ -588,7 +731,6 @@
                     dataType:"json",
                     success:function(response){
                         var points=calcWaypoints(arrActualX);
-                        console.log(points);
                         if(t<points.length-1){ requestAnimationFrame(animateActual); }
                         ctx.beginPath();
                         ctx.lineWidth = 3;
