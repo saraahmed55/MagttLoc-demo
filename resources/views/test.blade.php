@@ -20,7 +20,8 @@
         box-shadow: 5px 10px 18px #888888;
         padding-top: 20px;
         padding-right: 25px;
-        height: 200px;
+        height: 400px;
+        width: 200px;
        }
     </style>
 
@@ -28,10 +29,19 @@
 <body>
     <div>
         <div class="row position-relative">
-            
+
             <div class="col-11" ><canvas id="canvas"></canvas></div>
 
             <div class="col-1 position-absolute top-0 end-0" id="box">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="trace1">
+                    <label class="form-check-label" for="trace1">Trace 1</label>
+                </div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="trace2">
+                    <label class="form-check-label" for="trace2">Trace 2</label>
+                </div>
+                <hr>
                 <div class="form-check form-switch">
                     <input class="form-check-input" type="checkbox" id="points">
                     <label class="form-check-label" for="points">Points</label>
@@ -50,6 +60,7 @@
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
     <script>
         $(document).ready(function(){
+
             // fetchDataTraceAnimation();
 
 // vertices.push({x:0,y:0});
@@ -65,7 +76,8 @@ var t=1;
 
             var points=document.getElementById("points");
             var trace=document.getElementById("trace");
-
+            var trace1=document.getElementById("trace1");
+            var trace2=document.getElementById("trace2");
 
             var btnStart = document.getElementById("start");
             btnStart.addEventListener("click",   Start);
@@ -79,7 +91,7 @@ var t=1;
             document.body.appendChild(canvas);
             ctx.clearRect( 0, 0, ctx.canvas.width, ctx.canvas.height);
 
-            var verticesX=fetchDataTraceAnimationX();
+            // var verticesX=fetchDataTraceAnimationX();
 
             // console.log(verticesX[0])
 
@@ -101,16 +113,24 @@ var t=1;
 
             function Start(){
 
-                if(points.checked==true && trace.checked==false){
+                if(trace1.checked==true &&points.checked==true ){
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
                     fetchDataPoints();
-                }else if(trace.checked==true && points.checked==false)
-                {
+                }
+                else if(trace1.checked==true && trace.checked==true){
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
                     fetchDataTrace();
-                }else{
-                    fetchDataPoints();
-                    setTimeout(function() {
-                        fetchDataTrace();
-                    }, 2000);
+                }
+                else if(trace2.checked==true && points.checked==true){
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    fetchDataTrace2Points();
+                }
+                else if(trace2.checked==true && trace.checked==true){
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    fetchDataTrace2();
+                }
+                else{
+                    alert("check")
                 }
             }
 
@@ -171,6 +191,33 @@ var t=1;
                     }
                 });
             }
+            function fetchDataTrace2Points(){
+                $.ajax({
+                    type:"GET",
+                    url:"test-trace1",
+                    dataType:"json",
+                    success:function(response){
+                            $.each(response.data,function(key,item){
+                                console.log(item.actual_x_distance);
+                                var Actual_X_cm=parseFloat(item.actual_x_distance)/100;
+                                var Actual_Y_cm=parseFloat(item.actual_y_distance)/100;
+
+                                var Predicted_X_cm=parseFloat(item.predicted_x_distance)/100;
+                                var Predicted_Y_cm=parseFloat(item.predicted_y_distance)/100;
+
+                                var Actual_X_px=(96 * Actual_X_cm)/2.54;
+                                var Actual_Y_px=(96 * Actual_Y_cm)/2.54;
+
+                                var Predicted_X_px=(96 * Predicted_X_cm)/2.54;
+                                var Predicted_Y_px=(96 * Predicted_Y_cm)/2.54;
+
+                                drawPoint(ctx, Actual_X_px,Actual_Y_px, 'blue', 4);
+                                drawPoint(ctx, Predicted_X_px,Predicted_Y_px, 'green', 4);
+                            });
+                    }
+                });
+            }
+
 
             function fetchDataTrace(){
                 var arrActualX=[];
@@ -234,6 +281,65 @@ var t=1;
                     }
                 });
             }
+            function fetchDataTrace2(){
+                $.ajax({
+                    type:"GET",
+                    url:"test-trace1",
+                    dataType:"json",
+                    success:function(response){
+                        var count=0;
+                        $.each(response.data,function(key,item){
+
+                            ++count;
+                            var Actual_X_cm=parseFloat(item.actual_x_distance)/100;
+                            var Actual_Y_cm=parseFloat(item.actual_y_distance)/100;
+
+                            var Predicted_X_cm=parseFloat(item.predicted_x_distance)/100;
+                            var Predicted_Y_cm=parseFloat(item.predicted_y_distance)/100;
+
+                            var Actual_X_px=(96 * Actual_X_cm)/2.54;
+                            var Actual_Y_px=(96 * Actual_Y_cm)/2.54;
+
+                            var Predicted_X_px=(96 * Predicted_X_cm)/2.54;
+                            var Predicted_Y_px=(96 * Predicted_Y_cm)/2.54;
+
+                            if( count == 1){
+                                AX=Actual_X_px;
+                                AY=Actual_Y_px;
+
+                                PX=Predicted_X_px;
+                                PY=Predicted_Y_px;
+                            }else{
+
+                                ctx.beginPath();
+                                ctx.lineWidth = 3;
+                                ctx.strokeStyle = 'blue';
+                                ctx.moveTo(AX,AY);
+                                ctx.lineTo(Actual_X_px,Actual_Y_px);
+                                ctx.stroke();
+                                ctx.beginPath();
+                                ctx.lineWidth = 3;
+                                ctx.strokeStyle = 'green';
+                                ctx.moveTo(PX,PY);
+                                ctx.lineTo(Predicted_X_px,Predicted_Y_px);
+                                ctx.stroke();
+
+                            }
+
+                            setTimeout(function() {
+                                drawPoint(ctx, Actual_X_px,Actual_Y_px, 'blue', 2);
+                                drawPoint(ctx, Predicted_X_px,Predicted_Y_px, 'green', 2);
+                            }, 1000);
+
+                            AX=Actual_X_px;
+                            AY=Actual_Y_px;
+                            PX=Predicted_X_px;
+                            PY=Predicted_Y_px;
+                        });
+                    }
+                });
+            }
+           
 
             function fetchDataTraceAnimationX(){
                 var arrActualX=[];
@@ -262,7 +368,6 @@ var t=1;
                 console.log(arrActualX)
                 return arrActualX;
             }
-
             function fetchDataTraceAnimationY(){
                 var arrActualY=[];
                 $.ajax({

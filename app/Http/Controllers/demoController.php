@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Imports\DataImport;
 use App\Imports\Trace2Import;
 use App\Models\Data;
+use App\Models\Trace2;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
@@ -27,6 +28,11 @@ class demoController extends Controller
     public function showPointsforJS()
     {
         $data=Data::all();
+        return response()->json(['data'=>$data]);
+    }
+    public function showTrace2PointsforJS()
+    {
+        $data=Trace2::all();
         return response()->json(['data'=>$data]);
     }
     public function showRealPoint()

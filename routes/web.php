@@ -28,10 +28,11 @@ Route::get('/test', function () {
 Route::get('/points',[demoController::class,'getPoints']);
 
 Route::post('/demo',[demoController::class,'uploadData']);
-// Route::post('/demo',[demoController::class,'uploadTrace']);
 
-// Route::get('/test-points',[demoController::class,'showPointsforJS']);
-Route::get('/test-points',[demoController::class,'showRealPoint']);
+Route::get('/test-points',[demoController::class,'showPointsforJS']);
+Route::get('/test-trace1',[demoController::class,'showTrace2PointsforJS']);
+
+
 
 
 
