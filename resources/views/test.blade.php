@@ -10,7 +10,6 @@
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
     <script type="text/javascript" src="js/app.js"></script>
     <style>
-
         #canvas{
             background-image: url("img/layout_emp.png");
             background-size: 100% 100%;
@@ -20,9 +19,23 @@
         box-shadow: 5px 10px 18px #888888;
         padding-top: 20px;
         padding-right: 25px;
-        height: 400px;
+        height: 380px;
         width: 200px;
        }
+       .dotBlue {
+        height: 22px;
+        width: 22px;
+        background-color: blue;
+        border-radius: 50%;
+        display: inline-block;
+        }
+        .dotGreen {
+        height: 22px;
+        width: 22px;
+        background-color: green;
+        border-radius: 50%;
+        display: inline-block;
+        }
     </style>
 
 </head>
@@ -51,6 +64,13 @@
                     <label class="form-check-label" for="trace">Trace</label>
                 </div>
                 <button class="btn btn-outline-success"id="start" style="width: 100%;margin-top:20px;" type="button">Start</button>
+                <hr>
+                <div style="margin-top:20px;">
+                        <div><span class="dotBlue"></span><span style="padding-left: 7px">Real Points</span></div>
+                        <div><span class="dotGreen"></span><span style="padding-left: 7px">Predicted </span></div>
+                </div>
+                {{-- <canvas id="identify" style="margin-top:20px;box-shadow: 5px 10px 18px #888888;">
+                </canvas> --}}
             </div>
         </div>
     </div>
@@ -60,6 +80,15 @@
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
     <script>
         $(document).ready(function(){
+
+            // const identify=document.querySelector("#identify");
+            // const idf=identify.getContext("2d");
+            // identify.setAttribute("width", 170);
+            // identify.setAttribute("height", 70);
+            // $('#identify').append('<div>'+drawPoint(idf, 15,24, 'blue', 8)+" Real Point "+'</div>')
+
+            // drawPoint(idf, 15,44, 'green', 8);
+
 
             // fetchDataTraceAnimation();
 
@@ -339,7 +368,7 @@ var t=1;
                     }
                 });
             }
-           
+
 
             function fetchDataTraceAnimationX(){
                 var arrActualX=[];
