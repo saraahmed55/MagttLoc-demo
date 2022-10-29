@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Imports\DataImport;
+use App\Imports\Trace2Import;
 use App\Models\Data;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -19,8 +20,7 @@ class demoController extends Controller
 
     public function uploadData(Request $request)
     {
-        Excel::import(new DataImport,$request->file);
-        // return redirect()->route('demo')->with('success', 'Data Imported Successfully');
+        Excel::import(new Trace2Import,$request->file);
         return redirect()->back()->with('message', 'Data Saved Sucessfully!!');
     }
 
@@ -28,7 +28,6 @@ class demoController extends Controller
     {
         $data=Data::all();
         return response()->json(['data'=>$data]);
-        // return view('test')->with('data', $data);
     }
     public function showRealPoint()
     {
