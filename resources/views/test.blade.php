@@ -19,7 +19,7 @@
         box-shadow: 5px 10px 18px #888888;
         padding-top: 20px;
         padding-right: 25px;
-        height: 380px;
+        height: 480px;
         width: 200px;
        }
        .dotBlue {
@@ -42,6 +42,7 @@
 <body>
     <div>
         <div class="row position-relative">
+            <div id="alert" style="width: 700px;margin-left:450px"></div>
 
             <div class="col-11" ><canvas id="canvas"></canvas></div>
 
@@ -64,13 +65,16 @@
                     <label class="form-check-label" for="trace">Trace</label>
                 </div>
                 <button class="btn btn-outline-success"id="start" style="width: 100%;margin-top:20px;" type="button">Start</button>
+                <button class="btn btn-outline-primary"id="startAnimation" style="width: 100%;margin-top:20px;" type="button">Animation</button>
                 <hr>
                 <div style="margin-top:20px;">
                         <div><span class="dotBlue"></span><span style="padding-left: 7px">Real Points</span></div>
                         <div><span class="dotGreen"></span><span style="padding-left: 7px">Predicted </span></div>
                 </div>
-                {{-- <canvas id="identify" style="margin-top:20px;box-shadow: 5px 10px 18px #888888;">
-                </canvas> --}}
+                {{-- <svg xmlns="http://www.w3.org/2000/svg" id="icon" width="16" height="16" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
+                    <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z"/>
+                    <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                </svg> --}}
             </div>
         </div>
     </div>
@@ -81,28 +85,6 @@
     <script>
         $(document).ready(function(){
 
-            // const identify=document.querySelector("#identify");
-            // const idf=identify.getContext("2d");
-            // identify.setAttribute("width", 170);
-            // identify.setAttribute("height", 70);
-            // $('#identify').append('<div>'+drawPoint(idf, 15,24, 'blue', 8)+" Real Point "+'</div>')
-
-            // drawPoint(idf, 15,44, 'green', 8);
-
-
-            // fetchDataTraceAnimation();
-
-// vertices.push({x:0,y:0});
-// vertices.push({x:300,y:100});
-// vertices.push({x:80,y:200});
-// vertices.push({x:10,y:100});
-// vertices.push({x:0,y:0});
-// var points=calcWaypoints(vertices);
-// console.log(points)
-
-
-var t=1;
-
             var points=document.getElementById("points");
             var trace=document.getElementById("trace");
             var trace1=document.getElementById("trace1");
@@ -110,6 +92,9 @@ var t=1;
 
             var btnStart = document.getElementById("start");
             btnStart.addEventListener("click",   Start);
+
+            var btnStartAnimation = document.getElementById("startAnimation");
+            btnStartAnimation.addEventListener("click",   StartAnimation);
 
             const canvas=document.querySelector("#canvas");
             const ctx=canvas.getContext("2d");
@@ -119,26 +104,6 @@ var t=1;
 
             document.body.appendChild(canvas);
             ctx.clearRect( 0, 0, ctx.canvas.width, ctx.canvas.height);
-
-            // var verticesX=fetchDataTraceAnimationX();
-
-            // console.log(verticesX[0])
-
-
-
-            // animate();
-
-            function animate(){
-                if(t<points.length-1){ requestAnimationFrame(animate); }
-                // draw a line segment from the last waypoint
-                // to the current waypoint
-                ctx.beginPath();
-                ctx.moveTo(points[t-1].x,points[t-1].y);
-                ctx.lineTo(points[t].x,points[t].y);
-                ctx.stroke();
-                // increment "t" to get the next waypoint
-                t++;
-            }
 
             function Start(){
 
@@ -159,7 +124,33 @@ var t=1;
                     fetchDataTrace2();
                 }
                 else{
-                    alert("check")
+                    $('#alert').append('<div class="alert alert-warning text-center"id="success-alert">Choose a checkbox '+'<button type="button" style="margin-left: 50%" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>'+'</div>')
+                    $('div.alert').delay(1500).slideUp(300);
+
+                }
+            }
+            function StartAnimation(){
+
+                if(trace1.checked==true && trace.checked==true){
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    fetchDataTraceAnimation();
+                }
+                else if(trace2.checked==true && trace.checked==true){
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    fetchDataTrace2Animation();
+                }
+                else if(trace1.checked==true && points.checked==true){
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    fetchDataTraceAnimationPoints();
+                }
+                else if(trace2.checked==true && points.checked==true){
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    fetchDataTrace2AnimationPoints();
+                }
+                else{
+                    $('#alert').append('<div class="alert alert-warning text-center"id="success-alert">Choose a checkbox '+'<button type="button" style="margin-left: 50%" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>'+'</div>')
+                    $('div.alert').delay(1500).slideUp(300);
+
                 }
             }
 
@@ -182,43 +173,52 @@ var t=1;
             }
 
             function fetchDataPoints(){
+                const arrActualX=[];
                 $.ajax({
                     type:"GET",
                     url:"test-points",
                     dataType:"json",
                     success:function(response){
 
-                            var count=0;
-                            var arrActualX=[];
-                            var arrActualY=[];
+                        var count=0;
+                        $.each(response.data,function(key,item){
 
-                            $.each(response.data,function(key,item){
+                            var Actual_X_cm=parseFloat(item.actual_x_distance)/100;
+                            var Actual_Y_cm=parseFloat(item.actual_y_distance)/100;
 
-                                ++count;
-                                var Actual_X_cm=parseFloat(item.actual_x_distance)/100;
-                                var Actual_Y_cm=parseFloat(item.actual_y_distance)/100;
+                            var Predicted_X_cm=parseFloat(item.predicted_x_distance)/100;
+                            var Predicted_Y_cm=parseFloat(item.predicted_y_distance)/100;
 
-                                var Predicted_X_cm=parseFloat(item.predicted_x_distance)/100;
-                                var Predicted_Y_cm=parseFloat(item.predicted_y_distance)/100;
+                            var Actual_X_px=(96 * Actual_X_cm)/2.54;
+                            var Actual_Y_px=(96 * Actual_Y_cm)/2.54;
 
-                                var Actual_X_px=(96 * Actual_X_cm)/2.54;
-                                var Actual_Y_px=(96 * Actual_Y_cm)/2.54;
+                            var Predicted_X_px=(96 * Predicted_X_cm)/2.54;
+                            var Predicted_Y_px=(96 * Predicted_Y_cm)/2.54;
 
-                                var Predicted_X_px=(96 * Predicted_X_cm)/2.54;
-                                var Predicted_Y_px=(96 * Predicted_Y_cm)/2.54;
+                            drawPoint(ctx, Actual_X_px,Actual_Y_px, 'blue', 4);
+                            drawPoint(ctx, Predicted_X_px,Predicted_Y_px, 'green', 4);
 
-                                drawPoint(ctx, Actual_X_px,Actual_Y_px, 'blue', 4);
-                                drawPoint(ctx, Predicted_X_px,Predicted_Y_px, 'green', 4);
-
-                                AX=Actual_X_px;
-                                AY=Actual_Y_px;
-                                PX=Predicted_X_px;
-                                PY=Predicted_Y_px;
-                                // $('body').append('<h6>'+firstA+" ___________ "+secoundA+'</h6>')
-                            });
-
+                            AX=Actual_X_px;
+                            AY=Actual_Y_px;
+                            PX=Predicted_X_px;
+                            PY=Predicted_Y_px;
+                        });
                     }
                 });
+                // console.log(arrActualX)
+
+                var waypoints=[];
+                for(var i=1;i<arrActualX.length;i++){
+                    var pt0=arrActualX[i-1];
+                    var pt1=vertices[i];
+                    var dx=pt1.x-pt0.x;
+                    var dy=pt1.y-pt0.y;
+                    for(var j=0;j<100;j++){
+                        var x=pt0.x+dx*j/100;
+                        var y=pt0.y+dy*j/100;
+                        waypoints.push({x:x,y:y});
+                    }
+                }
             }
             function fetchDataTrace2Points(){
                 $.ajax({
@@ -369,108 +369,365 @@ var t=1;
                 });
             }
 
-
-            function fetchDataTraceAnimationX(){
-                var arrActualX=[];
+            const arrActualX=[];
+            const arrPredicted=[];
+            function fetchDataTraceAnimation(){
                 $.ajax({
                     type:"GET",
                     url:"test-points",
                     dataType:"json",
                     success:function(response){
                         var count=0;
-                        var i=0;
                         $.each(response.data,function(key,item){
 
-                            ++count;
                             var Actual_X_cm=parseFloat(item.actual_x_distance)/100;
-
-                            var Actual_X_px=(96 * Actual_X_cm)/2.54;
-
-                            arrActualX[i]=Actual_X_px;
-                            i++;
-
-                        });
-                    }
-
-                });
-
-                console.log(arrActualX)
-                return arrActualX;
-            }
-            function fetchDataTraceAnimationY(){
-                var arrActualY=[];
-                $.ajax({
-                    type:"GET",
-                    url:"test-points",
-                    dataType:"json",
-                    success:function(response){
-                        var count=0;
-                        $.each(response.data,function(key,item){
-
-                            ++count;
                             var Actual_Y_cm=parseFloat(item.actual_y_distance)/100;
 
+                            var Predicted_X_cm=parseFloat(item.predicted_x_distance)/100;
+                            var Predicted_Y_cm=parseFloat(item.predicted_y_distance)/100;
+
+                            var Actual_X_px=(96 * Actual_X_cm)/2.54;
                             var Actual_Y_px=(96 * Actual_Y_cm)/2.54;
 
-                            arrActualY.push(Actual_Y_px);
+                            var Predicted_X_px=(96 * Predicted_X_cm)/2.54;
+                            var Predicted_Y_px=(96 * Predicted_Y_cm)/2.54;
 
-                            if( count == 1){
-                                AX=Actual_Y_px;
-
-                            }else{
-
-                                // ctx.beginPath();
-                                // ctx.lineWidth = 3;
-                                // ctx.strokeStyle = 'blue';
-                                // ctx.moveTo(AX,AY);
-                                // ctx.lineTo(Actual_X_px,Actual_Y_px);
-                                // ctx.stroke();
-                                // ctx.beginPath();
-                                // ctx.lineWidth = 3;
-                                // ctx.strokeStyle = 'green';
-                                // ctx.moveTo(PX,PY);
-                                // ctx.lineTo(Predicted_X_px,Predicted_Y_px);
-                                // ctx.stroke();
-
-                            }
-                            AX=Actual_Y_px;
+                            arrActualX[count]={x:Actual_X_px,y:Actual_Y_px};
+                            arrPredicted[count]={x:Predicted_X_px,y:Predicted_Y_px};
+                            ++count;
                         });
                     }
+                });
+                smothingTraceAnimation();
 
+            }
+            function smothingTraceAnimation(){
+                $.ajax({
+                    type:"GET",
+                    url:"test-points",
+                    dataType:"json",
+                    success:function(response){
+                        for(var i=1;i<arrActualX.length;i++){
+                            var at0=arrActualX[i-1];
+                            var at1=arrActualX[i];
+                            var ax=(at0.x+at1.x)/2;
+                            var ay=(at0.y+at1.y)/2;
+
+                            var pt0=arrPredicted[i-1];
+                            var pt1=arrPredicted[i];
+                            var px=(pt0.x+pt1.x)/2;
+                            var py=(pt0.y+pt1.y)/2;
+
+                            arrActualX[i-1]={x:ax,y:ay};
+                            arrPredicted[i-1]={x:px,y:py};
+                        }
+
+                    }
+                });
+                $.ajax({
+                    type:"GET",
+                    url:"test-points",
+                    dataType:"json",
+                    success:function(response){
+                        animateActual();
+                        animatepredicted();
+                    }
+                });
+            }
+
+
+
+            const arrActual2=[];
+            const arrPredicted2=[];
+            function fetchDataTrace2Animation(){
+                $.ajax({
+                    type:"GET",
+                    url:"test-trace1",
+                    dataType:"json",
+                    success:function(response){
+                        var count=0;
+                        $.each(response.data,function(key,item){
+
+                            var Actual_X_cm=parseFloat(item.actual_x_distance)/100;
+                            var Actual_Y_cm=parseFloat(item.actual_y_distance)/100;
+
+                            var Predicted_X_cm=parseFloat(item.predicted_x_distance)/100;
+                            var Predicted_Y_cm=parseFloat(item.predicted_y_distance)/100;
+
+                            var Actual_X_px=(96 * Actual_X_cm)/2.54;
+                            var Actual_Y_px=(96 * Actual_Y_cm)/2.54;
+
+                            var Predicted_X_px=(96 * Predicted_X_cm)/2.54;
+                            var Predicted_Y_px=(96 * Predicted_Y_cm)/2.54;
+
+                            arrActual2[count]={x:Actual_X_px,y:Actual_Y_px};
+                            arrPredicted2[count]={x:Predicted_X_px,y:Predicted_Y_px};
+                            ++count;
+                        });
+                    }
+                });
+                $.ajax({
+                    type:"GET",
+                    url:"test-trace1",
+                    dataType:"json",
+                    success:function(response){
+                        animateActual2();
+                        animatepredicted2();
+                    }
                 });
 
-                return arrActualY;
             }
 
-            function calcWaypointsX(vertices){
+
+            const arrActualPoints=[];
+            const arrPredictedPoints=[];
+            function fetchDataTraceAnimationPoints(){
+                $.ajax({
+                    type:"GET",
+                    url:"test-points",
+                    dataType:"json",
+                    success:function(response){
+                        var count=0;
+                        $.each(response.data,function(key,item){
+
+                            var Actual_X_cm=parseFloat(item.actual_x_distance)/100;
+                            var Actual_Y_cm=parseFloat(item.actual_y_distance)/100;
+
+                            var Predicted_X_cm=parseFloat(item.predicted_x_distance)/100;
+                            var Predicted_Y_cm=parseFloat(item.predicted_y_distance)/100;
+
+                            var Actual_X_px=(96 * Actual_X_cm)/2.54;
+                            var Actual_Y_px=(96 * Actual_Y_cm)/2.54;
+
+                            var Predicted_X_px=(96 * Predicted_X_cm)/2.54;
+                            var Predicted_Y_px=(96 * Predicted_Y_cm)/2.54;
+
+                            arrActualPoints[count]={x:Actual_X_px,y:Actual_Y_px};
+                            arrPredictedPoints[count]={x:Predicted_X_px,y:Predicted_Y_px};
+                            ++count;
+                        });
+                    }
+                });
+                $.ajax({
+                    type:"GET",
+                    url:"test-points",
+                    dataType:"json",
+                    success:function(response){
+                        animateActualPoint();
+                        animatepredictedPoint();
+                    }
+                });
+
+            }
+            const arrActual2Points=[];
+            const arrPredicted2Points=[];
+            function fetchDataTrace2AnimationPoints(){
+                $.ajax({
+                    type:"GET",
+                    url:"test-trace1",
+                    dataType:"json",
+                    success:function(response){
+                        var count=0;
+                        $.each(response.data,function(key,item){
+
+                            var Actual_X_cm=parseFloat(item.actual_x_distance)/100;
+                            var Actual_Y_cm=parseFloat(item.actual_y_distance)/100;
+
+                            var Predicted_X_cm=parseFloat(item.predicted_x_distance)/100;
+                            var Predicted_Y_cm=parseFloat(item.predicted_y_distance)/100;
+
+                            var Actual_X_px=(96 * Actual_X_cm)/2.54;
+                            var Actual_Y_px=(96 * Actual_Y_cm)/2.54;
+
+                            var Predicted_X_px=(96 * Predicted_X_cm)/2.54;
+                            var Predicted_Y_px=(96 * Predicted_Y_cm)/2.54;
+
+                            arrActual2Points[count]={x:Actual_X_px,y:Actual_Y_px};
+                            arrPredicted2Points[count]={x:Predicted_X_px,y:Predicted_Y_px};
+                            ++count;
+                        });
+                    }
+                });
+                $.ajax({
+                    type:"GET",
+                    url:"test-trace1",
+                    dataType:"json",
+                    success:function(response){
+                        animateActual2Point();
+                        animatepredicted2Point();
+                    }
+                });
+
+            }
+
+
+
+
+
+            function calcWaypoints(vertices){
                 var waypoints=[];
                 for(var i=1;i<vertices.length;i++){
                     var pt0=vertices[i-1];
                     var pt1=vertices[i];
                     var dx=pt1.x-pt0.x;
                     var dy=pt1.y-pt0.y;
-                    for(var j=0;j<100;j++){
+                    for(var j=0;j<100;j+=5){
                         var x=pt0.x+dx*j/100;
                         var y=pt0.y+dy*j/100;
-                        waypoints.push(x);
+                        waypoints.push({x:x,y:y});
                     }
                 }
                 return(waypoints);
             }
-            function calcWaypointsY(vertices){
-                var waypoints=[];
-                for(var i=1;i<vertices.length;i++){
-                    var pt0=vertices[i-1];
-                    var pt1=vertices[i];
-                    var dx=pt1.x-pt0.x;
-                    var dy=pt1.y-pt0.y;
-                    for(var j=0;j<100;j++){
-                        var x=pt0.x+dx*j/100;
-                        var y=pt0.y+dy*j/100;
-                        waypoints.push(y);
-                    }
-                }
-                return(waypoints);
+
+            var t=1;
+            function animateActual(){
+                $.ajax({
+                    type:"GET",
+                    url:"test-points",
+                    dataType:"json",
+                    success:function(response){
+                        var points=calcWaypoints(arrActualX);
+                        console.log(points);
+                        if(t<points.length-1){ requestAnimationFrame(animateActual); }
+                        ctx.beginPath();
+                        ctx.lineWidth = 3;
+                        ctx.lineCap = "round";
+                        ctx.strokeStyle = 'blue';
+                        ctx.moveTo(points[t-1].x,points[t-1].y);
+                        ctx.lineTo(points[t].x,points[t].y);
+                        ctx.stroke();
+                        t++;
+                     }
+                });
+
+            }
+            var t=1
+            function animatepredicted(){
+                $.ajax({
+                    type:"GET",
+                    url:"test-points",
+                    dataType:"json",
+                    success:function(response){
+                        var points=calcWaypoints(arrPredicted);
+                        console.log(points);
+                        if(t<points.length-1){ requestAnimationFrame(animatepredicted); }
+                        ctx.beginPath();
+                        ctx.lineWidth = 3;
+                        ctx.lineCap = "round";
+                        ctx.strokeStyle = 'green';
+                        ctx.moveTo(points[t-1].x,points[t-1].y);
+                        ctx.lineTo(points[t].x,points[t].y);
+                        ctx.stroke();
+                        t++;
+                     }
+                });
+            }
+            var t=1;
+            function animateActual2(){
+                $.ajax({
+                    type:"GET",
+                    url:"test-trace1",
+                    dataType:"json",
+                    success:function(response){
+                        var points=calcWaypoints(arrActual2);
+                        console.log(points);
+                        if(t<points.length-1){ requestAnimationFrame(animateActual2); }
+                        ctx.beginPath();
+                        ctx.lineWidth = 3;
+                        ctx.lineCap = "round";
+                        ctx.strokeStyle = 'blue';
+                        ctx.moveTo(points[t-1].x,points[t-1].y);
+                        ctx.lineTo(points[t].x,points[t].y);
+                        ctx.stroke();
+                        t++;
+                     }
+                });
+
+            }
+            var t=1
+            function animatepredicted2(){
+                $.ajax({
+                    type:"GET",
+                    url:"test-trace1",
+                    dataType:"json",
+                    success:function(response){
+                        var points=calcWaypoints(arrPredicted2);
+                        console.log(points);
+                        if(t<points.length-1){ requestAnimationFrame(animatepredicted2); }
+                        ctx.beginPath();
+                        ctx.lineWidth = 3;
+                        ctx.lineCap = "round";
+                        ctx.strokeStyle = 'green';
+                        ctx.moveTo(points[t-1].x,points[t-1].y);
+                        ctx.lineTo(points[t].x,points[t].y);
+                        ctx.stroke();
+                        t++;
+                     }
+                });
+            }
+
+            var t=1;
+            function animateActualPoint(){
+                $.ajax({
+                    type:"GET",
+                    url:"test-points",
+                    dataType:"json",
+                    success:function(response){
+                        var points=calcWaypoints(arrActualPoints);
+                        console.log(points);
+                        if(t<points.length-1){ requestAnimationFrame(animateActualPoint); }
+                        drawPoint(ctx, points[t].x,points[t].y, 'blue', 4);
+                        // drawPoint(ctx, Predicted_X_px,Predicted_Y_px, 'green', 4);
+                        t++;
+                     }
+                });
+
+            }
+            var t=1;
+            function animatepredictedPoint(){
+                $.ajax({
+                    type:"GET",
+                    url:"test-points",
+                    dataType:"json",
+                    success:function(response){
+                        var points=calcWaypoints(arrPredictedPoints);
+                        if(t<points.length-1){ requestAnimationFrame(animatepredictedPoint); }
+                        drawPoint(ctx, points[t].x,points[t].y, 'green', 4);
+                        t++;
+                     }
+                });
+
+            }
+
+            var t=1;
+            function animateActual2Point(){
+                $.ajax({
+                    type:"GET",
+                    url:"test-trace1",
+                    dataType:"json",
+                    success:function(response){
+                        var points=calcWaypoints(arrActual2Points);
+                        if(t<points.length-1){ requestAnimationFrame(animateActual2Point); }
+                        drawPoint(ctx, points[t].x,points[t].y, 'blue', 4);
+                        t++;
+                     }
+                });
+
+            }
+            var t=1
+            function animatepredicted2Point(){
+                $.ajax({
+                    type:"GET",
+                    url:"test-trace1",
+                    dataType:"json",
+                    success:function(response){
+                        var points=calcWaypoints(arrPredicted2Points);
+                        if(t<points.length-1){ requestAnimationFrame(animatepredicted2Point); }
+                        drawPoint(ctx, points[t].x,points[t].y, 'green', 4);
+                        t++;
+                     }
+                });
             }
 
         });
