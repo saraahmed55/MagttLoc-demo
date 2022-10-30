@@ -48,8 +48,15 @@
         box-shadow: 5px 10px 18px #888888;
         padding-top: 20px;
         padding-right: 25px;
-        height: 720px;
+        height: 710px;
         width: 200px;
+       }
+       #identify{
+        position: fixed;
+        bottom:0;
+        margin-left: 25px;
+        width: 40%;
+        height: 120px;
        }
        .dotBlue {
         height: 22px;
@@ -110,6 +117,7 @@
         <div class="row position-relative">
 
             <div id="alert" style="width:600px;margin-left:550px"></div>
+
             <div class="col-11" ><canvas id="canvas"></canvas></div>
 
             <div class="col-1 position-absolute top-0 end-0" id="box">
@@ -157,8 +165,9 @@
                     <input type="range" min="1" max="25" value="10" class="slider" id="myRange">
                     <p>Speed Value: <span id="demo"></span></p>
                 </div>
-                <hr>
-                <div style="margin-top:20px;">
+            </div>
+            <div id="identify">
+                <div>
                     <div><span class="dotBlue"></span><span style="padding-left: 7px">Real Points</span></div>
                     <div><span class="dotGreen"></span><span style="padding-left: 7px">Predicted </span></div>
                 </div>
