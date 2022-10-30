@@ -32,6 +32,11 @@ Route::post('/demo',[demoController::class,'uploadData']);
 Route::get('/test-points',[demoController::class,'showPointsforJS']);
 Route::get('/test-trace1',[demoController::class,'showTrace2PointsforJS']);
 
+Route::get('/RTT',[demoController::class,'showRTT1Points']);
+Route::get('/RTT2',[demoController::class,'showRTT2Points']);
+
+
+
 
 
 
