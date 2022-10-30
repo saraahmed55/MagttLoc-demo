@@ -80,7 +80,7 @@
     <div>
         <div class="row position-relative">
 
-
+            <div id="alert" style="width:600px;margin-left:550px"></div>
             <div class="col-11" ><canvas id="canvas"></canvas></div>
 
             <div class="col-1 position-absolute top-0 end-0" id="box">
