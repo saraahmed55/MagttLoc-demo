@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Imports\DataImport;
+use App\Imports\Mag1Import;
 use App\Imports\RTT1Import;
 use App\Imports\RTT2Import;
 use App\Imports\Trace2Import;
 use App\Models\Data;
+use App\Models\Mag1;
+use App\Models\Mag2;
 use App\Models\RTT1;
 use App\Models\RTT2;
 use App\Models\Trace2;
@@ -35,9 +38,15 @@ class demoController extends Controller
     //     return redirect()->back()->with('message', 'Data Saved Sucessfully!!');
     // }
 
+    // public function uploadData(Request $request)
+    // {
+    //     Excel::import(new RTT2Import,$request->file);
+    //     return redirect()->back()->with('message', 'Data Saved Sucessfully!!');
+    // }
+
     public function uploadData(Request $request)
     {
-        Excel::import(new RTT2Import,$request->file);
+        Excel::import(new Mag1Import,$request->file);
         return redirect()->back()->with('message', 'Data Saved Sucessfully!!');
     }
 
@@ -59,6 +68,16 @@ class demoController extends Controller
     public function showRTT2Points()
     {
         $data=RTT2::all();
+        return response()->json(['data'=>$data]);
+    }
+    public function showMag1Points()
+    {
+        $data=Mag1::all();
+        return response()->json(['data'=>$data]);
+    }
+    public function showMag2Points()
+    {
+        $data=Mag2::all();
         return response()->json(['data'=>$data]);
     }
     public function showRealPoint()

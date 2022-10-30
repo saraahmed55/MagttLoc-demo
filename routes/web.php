@@ -35,6 +35,11 @@ Route::get('/test-trace1',[demoController::class,'showTrace2PointsforJS']);
 Route::get('/RTT',[demoController::class,'showRTT1Points']);
 Route::get('/RTT2',[demoController::class,'showRTT2Points']);
 
+Route::get('/Mag1',[demoController::class,'showMag1Points']);
+Route::get('/Mag2',[demoController::class,'showMag2Points']);
+
+
+
 
 
 
