@@ -19,7 +19,7 @@
         box-shadow: 5px 10px 18px #888888;
         padding-top: 20px;
         padding-right: 25px;
-        height: 480px;
+        height: 505px;
         width: 200px;
        }
        .dotBlue {
@@ -66,6 +66,7 @@
                 </div>
                 <button class="btn btn-outline-success"id="start" style="width: 100%;margin-top:20px;" type="button">Start</button>
                 <button class="btn btn-outline-primary"id="startAnimation" style="width: 100%;margin-top:20px;" type="button">Animation</button>
+                <button class="btn btn-outline-danger"id="stop" style="width: 100%;margin-top:20px;" type="button">Stop</button>
                 <hr>
                 <div style="margin-top:20px;">
                         <div><span class="dotBlue"></span><span style="padding-left: 7px">Real Points</span></div>
@@ -84,7 +85,6 @@
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
     <script>
         $(document).ready(function(){
-
             var points=document.getElementById("points");
             var trace=document.getElementById("trace");
             var trace1=document.getElementById("trace1");
@@ -95,6 +95,9 @@
 
             var btnStartAnimation = document.getElementById("startAnimation");
             btnStartAnimation.addEventListener("click",   StartAnimation);
+
+            var btnStop = document.getElementById("stop");
+            btnStop.addEventListener("click",  Stop);
 
             const canvas=document.querySelector("#canvas");
             const ctx=canvas.getContext("2d");
@@ -130,6 +133,7 @@
 
                 }
             }
+
             function StartAnimation(){
 
                 if(trace1.checked==true && trace.checked==true){
@@ -154,6 +158,10 @@
                     $('div.alert').delay(1500).slideUp(300);
 
                 }
+            }
+
+            function Stop(){
+
             }
 
             function drawPoint(context, x, y, color, size) {
@@ -425,8 +433,6 @@
                     }
                 });
             }
-
-
 
 
 
@@ -726,6 +732,7 @@
             }
 
             var t=1;
+            var cancel=null;
             function animateActual(){
                 $.ajax({
                     type:"GET",
@@ -822,7 +829,6 @@
                         console.log(points);
                         if(t<points.length-1){ requestAnimationFrame(animateActualPoint); }
                         drawPoint(ctx, points[t].x,points[t].y, 'blue', 4);
-                        // drawPoint(ctx, Predicted_X_px,Predicted_Y_px, 'green', 4);
                         t++;
                      }
                 });
