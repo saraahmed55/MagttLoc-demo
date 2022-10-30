@@ -10,6 +10,35 @@
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
     <script type="text/javascript" src="js/app.js"></script>
     <style>
+        h6 {
+        font-family: sans-serif;
+        /* margin: 100px auto; */
+        color:#1972b8;
+        text-align: center;
+        position: relative;
+      }
+      h6:before {
+        content: "";
+        display: block;
+        width: 25px;
+        height: 3px;
+        background: #191970;
+        left: 0;
+        top: 50%;
+        position: absolute;
+      }
+      h6:after {
+        content: "";
+        display: block;
+        width: 25px;
+        height: 3px;
+        background: #191970;
+        right: 0;
+        top: 50%;
+        position: absolute;
+      }
+      #headerRtt::after{width: 45px;}
+      #headerRtt::before{width: 45px;}
         #canvas{
             background-image: url("img/layout_emp.png");
             background-size: 100% 100%;
@@ -19,7 +48,7 @@
         box-shadow: 5px 10px 18px #888888;
         padding-top: 20px;
         padding-right: 25px;
-        height: 650px;
+        height: 720px;
         width: 200px;
        }
        .dotBlue {
@@ -84,6 +113,7 @@
             <div class="col-11" ><canvas id="canvas"></canvas></div>
 
             <div class="col-1 position-absolute top-0 end-0" id="box">
+                <h6>Combined</h6>
                 <div class="form-check form-switch">
                     <input class="form-check-input" type="checkbox" id="trace1">
                     <label class="form-check-label" for="trace1">Trace 1</label>
@@ -93,13 +123,24 @@
                     <label class="form-check-label" for="trace2">Trace 2</label>
                 </div>
                 <hr>
+                <h6 id="headerRtt">RTT</h6>
                 <div class="form-check form-switch">
                     <input class="form-check-input" type="checkbox" id="rtt1">
-                    <label class="form-check-label" for="rtt1">RTT Trace1</label>
+                    <label class="form-check-label" for="rtt1">Trace1</label>
                 </div>
                 <div class="form-check form-switch">
                     <input class="form-check-input" type="checkbox" id="rtt2">
-                    <label class="form-check-label" for="rtt2">RTT Trace2</label>
+                    <label class="form-check-label" for="rtt2">Trace 2</label>
+                </div>
+                <hr>
+                <h6 id="headerMag">Magnetic</h6>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="mag1">
+                    <label class="form-check-label" for="mag1">Trace1</label>
+                </div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="mag2">
+                    <label class="form-check-label" for="mag2">Trace 2</label>
                 </div>
                 <hr>
                 <div class="form-check form-switch">
@@ -137,6 +178,8 @@
             var trace2=document.getElementById("trace2");
             var RTT1 = document.getElementById('rtt1');
             var RTT2 = document.getElementById('rtt2');
+            var Mag1 = document.getElementById('mag1');
+            var Mag2 = document.getElementById('mag2');
 
 
             var slider = document.getElementById("myRange");
@@ -180,21 +223,37 @@
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
                     fetchDataTrace2();
                 }
-                else if(rtt1.checked==true && trace.checked==true){
+                else if(RTT1.checked==true && trace.checked==true){
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
                     fetchRTT1Trace();
                 }
-                else if(rtt1.checked==true && points.checked==true){
+                else if(RTT1.checked==true && points.checked==true){
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
                     fetchRTT1Points();
                 }
-                else if(rtt2.checked==true && trace.checked==true){
+                else if(RTT2.checked==true && trace.checked==true){
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
                     fetchRTT2Trace();
                 }
-                else if(rtt2.checked==true && points.checked==true){
+                else if(RTT2.checked==true && points.checked==true){
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
                     fetchRTT2Points();
+                }
+                else if(Mag1.checked==true && trace.checked==true){
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    fetchMag1Trace();
+                }
+                else if(Mag1.checked==true && points.checked==true){
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    fetchMag1Points();
+                }
+                else if(Mag2.checked==true && trace.checked==true){
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    fetchMag2Trace();
+                }
+                else if(Mag2.checked==true && points.checked==true){
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    fetchMag2Points();
                 }
                 else{
                     var a='<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:"><path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>'
@@ -236,6 +295,22 @@
                 else if(RTT2.checked==true && trace.checked==true){
                     ctx.clearRect(0, 0, canvas.width, canvas.height);
                     fetchRTT2TraceAnimation();
+                }
+                else if(Mag1.checked==true && points.checked==true){
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    fetchMag1TraceAnimationPoints();
+                }
+                else if(Mag1.checked==true && trace.checked==true){
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    fetchMag1TraceAnimation();
+                }
+                else if(Mag2.checked==true && points.checked==true){
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    fetchMag2TraceAnimationPoints();
+                }
+                else if(Mag2.checked==true && trace.checked==true){
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    fetchMag2TraceAnimation();
                 }
                 else{
                     var a='<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2" viewBox="0 0 16 16" role="img" aria-label="Warning:"><path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>'
@@ -433,6 +508,276 @@
                     }
                 }
             }
+
+            function fetchMag1Points(){
+                const arrRTTX=[];
+                $.ajax({
+                    type:"GET",
+                    url:"Mag1",
+                    dataType:"json",
+                    success:function(response){
+
+                        var count=0;
+                        $.each(response.data,function(key,item){
+
+                            var Actual_X_cm=parseFloat(item.actual_x_distance)/100;
+                            var Actual_Y_cm=parseFloat(item.actual_y_distance)/100;
+
+                            var Predicted_X_cm=parseFloat(item.predicted_x_distance)/100;
+                            var Predicted_Y_cm=parseFloat(item.predicted_y_distance)/100;
+
+                            var Actual_X_px=(96 * Actual_X_cm)/2.54;
+                            var Actual_Y_px=(96 * Actual_Y_cm)/2.54;
+
+                            var Predicted_X_px=(96 * Predicted_X_cm)/2.54;
+                            var Predicted_Y_px=(96 * Predicted_Y_cm)/2.54;
+
+                            drawPoint(ctx, Actual_X_px,Actual_Y_px, 'blue', 4);
+                            drawPoint(ctx, Predicted_X_px,Predicted_Y_px, 'green', 4);
+
+                            AX=Actual_X_px;
+                            AY=Actual_Y_px;
+                            PX=Predicted_X_px;
+                            PY=Predicted_Y_px;
+                        });
+                    }
+                });
+
+                var waypoints=[];
+                for(var i=1;i<arrRTTX.length;i++){
+                    var pt0=arrActualX[i-1];
+                    var pt1=vertices[i];
+                    var dx=pt1.x-pt0.x;
+                    var dy=pt1.y-pt0.y;
+                    for(var j=0;j<100;j++){
+                        var x=pt0.x+dx*j/100;
+                        var y=pt0.y+dy*j/100;
+                        waypoints.push({x:x,y:y});
+                    }
+                }
+            }
+            function fetchMag2Points(){
+                const arrRTTX=[];
+                $.ajax({
+                    type:"GET",
+                    url:"Mag2",
+                    dataType:"json",
+                    success:function(response){
+
+                        var count=0;
+                        $.each(response.data,function(key,item){
+
+                            var Actual_X_cm=parseFloat(item.actual_x_distance)/100;
+                            var Actual_Y_cm=parseFloat(item.actual_y_distance)/100;
+
+                            var Predicted_X_cm=parseFloat(item.predicted_x_distance)/100;
+                            var Predicted_Y_cm=parseFloat(item.predicted_y_distance)/100;
+
+                            var Actual_X_px=(96 * Actual_X_cm)/2.54;
+                            var Actual_Y_px=(96 * Actual_Y_cm)/2.54;
+
+                            var Predicted_X_px=(96 * Predicted_X_cm)/2.54;
+                            var Predicted_Y_px=(96 * Predicted_Y_cm)/2.54;
+
+                            drawPoint(ctx, Actual_X_px,Actual_Y_px, 'blue', 4);
+                            drawPoint(ctx, Predicted_X_px,Predicted_Y_px, 'green', 4);
+
+                            AX=Actual_X_px;
+                            AY=Actual_Y_px;
+                            PX=Predicted_X_px;
+                            PY=Predicted_Y_px;
+                        });
+                    }
+                });
+
+                var waypoints=[];
+                for(var i=1;i<arrRTTX.length;i++){
+                    var pt0=arrActualX[i-1];
+                    var pt1=vertices[i];
+                    var dx=pt1.x-pt0.x;
+                    var dy=pt1.y-pt0.y;
+                    for(var j=0;j<100;j++){
+                        var x=pt0.x+dx*j/100;
+                        var y=pt0.y+dy*j/100;
+                        waypoints.push({x:x,y:y});
+                    }
+                }
+            }
+
+
+            const Mag2TraceA=[];
+            const Mag2TraceP=[]
+            function fetchMag2Trace(){
+                var arrActualX=[];
+                $.ajax({
+                    type:"GET",
+                    url:"Mag2",
+                    dataType:"json",
+                    success:function(response){
+                        var count=0;
+                        $.each(response.data,function(key,item){
+
+                            var Actual_X_cm=parseFloat(item.actual_x_distance)/100;
+                            var Actual_Y_cm=parseFloat(item.actual_y_distance)/100;
+
+                            var Predicted_X_cm=parseFloat(item.predicted_x_distance)/100;
+                            var Predicted_Y_cm=parseFloat(item.predicted_y_distance)/100;
+
+                            var Actual_X_px=(96 * Actual_X_cm)/2.54;
+                            var Actual_Y_px=(96 * Actual_Y_cm)/2.54;
+
+                            var Predicted_X_px=(96 * Predicted_X_cm)/2.54;
+                            var Predicted_Y_px=(96 * Predicted_Y_cm)/2.54;
+
+                            arrActualX.push({x:Actual_X_px,y:Actual_Y_px});
+
+                            Mag2TraceA[count]={x:Actual_X_px,y:Actual_Y_px};
+                            Mag2TraceP[count]={x:Predicted_X_px,y:Predicted_Y_px};
+                            ++count;
+
+                        });
+                    }
+                });
+                smothingfetchMag2Trace();
+            }
+            function smothingfetchMag2Trace(){
+                $.ajax({
+                    type:"GET",
+                    url:"Mag2",
+                    dataType:"json",
+                    success:function(response){
+                        for(var i=2;i<Mag2TraceA.length;i++){
+                            var at0=Mag2TraceA[i-2];
+                            var at1=Mag2TraceA[i-1];
+                            var at2=Mag2TraceA[i];
+                            var ax=(at0.x+at1.x+at2.x)/3;
+                            var ay=(at0.y+at1.y+at2.y)/3;
+
+                            var pt0=Mag2TraceP[i-2];
+                            var pt1=Mag2TraceP[i-1];
+                            var pt2=Mag2TraceP[i];
+                            var px=(pt0.x+pt1.x+pt2.x)/3;
+                            var py=(pt0.y+pt1.y+pt2.y)/3;
+
+                            Mag2TraceA[i-1]={x:ax,y:ay};
+                            Mag2TraceP[i-1]={x:px,y:py};
+                        }
+
+                    }
+                });
+                $.ajax({
+                    type:"GET",
+                    url:"Mag2",
+                    dataType:"json",
+                    success:function(response){
+                        for(var t=1;t<Mag2TraceA.length;t++){
+                            ctx.beginPath();
+                            ctx.lineWidth = 3;
+                            ctx.strokeStyle = 'blue';
+                            ctx.lineCap = "round";
+                            ctx.moveTo(Mag2TraceA[t-1].x,Mag2TraceA[t-1].y);
+                            ctx.lineTo(Mag2TraceA[t].x,Mag2TraceA[t].y);
+                            ctx.stroke();
+
+                            ctx.beginPath();
+                            ctx.lineWidth = 3;
+                            ctx.strokeStyle = 'green';
+                            ctx.lineCap = "round";
+                            ctx.moveTo(Mag2TraceP[t-1].x,Mag2TraceP[t-1].y);
+                            ctx.lineTo(Mag2TraceP[t].x,Mag2TraceP[t].y);
+                            ctx.stroke();
+                        }
+                    }
+                });
+            }
+
+
+            const Mag1TraceA=[];
+            const Mag1TraceP=[]
+            function fetchMag1Trace(){
+                var arrActualX=[];
+                $.ajax({
+                    type:"GET",
+                    url:"Mag1",
+                    dataType:"json",
+                    success:function(response){
+                        var count=0;
+                        $.each(response.data,function(key,item){
+
+                            var Actual_X_cm=parseFloat(item.actual_x_distance)/100;
+                            var Actual_Y_cm=parseFloat(item.actual_y_distance)/100;
+
+                            var Predicted_X_cm=parseFloat(item.predicted_x_distance)/100;
+                            var Predicted_Y_cm=parseFloat(item.predicted_y_distance)/100;
+
+                            var Actual_X_px=(96 * Actual_X_cm)/2.54;
+                            var Actual_Y_px=(96 * Actual_Y_cm)/2.54;
+
+                            var Predicted_X_px=(96 * Predicted_X_cm)/2.54;
+                            var Predicted_Y_px=(96 * Predicted_Y_cm)/2.54;
+
+                            arrActualX.push({x:Actual_X_px,y:Actual_Y_px});
+
+                            Mag1TraceA[count]={x:Actual_X_px,y:Actual_Y_px};
+                            Mag1TraceP[count]={x:Predicted_X_px,y:Predicted_Y_px};
+                            ++count;
+
+                        });
+                    }
+                });
+                smothingfetchMag1Trace();
+            }
+            function smothingfetchMag1Trace(){
+                $.ajax({
+                    type:"GET",
+                    url:"Mag1",
+                    dataType:"json",
+                    success:function(response){
+                        for(var i=2;i<Mag1TraceA.length;i++){
+                            var at0=Mag1TraceA[i-2];
+                            var at1=Mag1TraceA[i-1];
+                            var at2=Mag1TraceA[i];
+                            var ax=(at0.x+at1.x+at2.x)/3;
+                            var ay=(at0.y+at1.y+at2.y)/3;
+
+                            var pt0=Mag1TraceP[i-2];
+                            var pt1=Mag1TraceP[i-1];
+                            var pt2=Mag1TraceP[i];
+                            var px=(pt0.x+pt1.x+pt2.x)/3;
+                            var py=(pt0.y+pt1.y+pt2.y)/3;
+
+                            Mag1TraceA[i-1]={x:ax,y:ay};
+                            Mag1TraceP[i-1]={x:px,y:py};
+                        }
+
+                    }
+                });
+                $.ajax({
+                    type:"GET",
+                    url:"Mag1",
+                    dataType:"json",
+                    success:function(response){
+                        for(var t=1;t<Mag1TraceA.length;t++){
+                            ctx.beginPath();
+                            ctx.lineWidth = 3;
+                            ctx.strokeStyle = 'blue';
+                            ctx.lineCap = "round";
+                            ctx.moveTo(Mag1TraceA[t-1].x,Mag1TraceA[t-1].y);
+                            ctx.lineTo(Mag1TraceA[t].x,Mag1TraceA[t].y);
+                            ctx.stroke();
+
+                            ctx.beginPath();
+                            ctx.lineWidth = 3;
+                            ctx.strokeStyle = 'green';
+                            ctx.lineCap = "round";
+                            ctx.moveTo(Mag1TraceP[t-1].x,Mag1TraceP[t-1].y);
+                            ctx.lineTo(Mag1TraceP[t].x,Mag1TraceP[t].y);
+                            ctx.stroke();
+                        }
+                    }
+                });
+            }
+
 
 
             const RTT2TraceA=[];
@@ -786,6 +1131,146 @@
             }
 
 
+
+            const Mag1A=[];
+            const Mag1P=[];
+            function fetchMag1TraceAnimation(){
+                $.ajax({
+                    type:"GET",
+                    url:"Mag1",
+                    dataType:"json",
+                    success:function(response){
+                        var count=0;
+                        $.each(response.data,function(key,item){
+
+                            var Actual_X_cm=parseFloat(item.actual_x_distance)/100;
+                            var Actual_Y_cm=parseFloat(item.actual_y_distance)/100;
+
+                            var Predicted_X_cm=parseFloat(item.predicted_x_distance)/100;
+                            var Predicted_Y_cm=parseFloat(item.predicted_y_distance)/100;
+
+                            var Actual_X_px=(96 * Actual_X_cm)/2.54;
+                            var Actual_Y_px=(96 * Actual_Y_cm)/2.54;
+
+                            var Predicted_X_px=(96 * Predicted_X_cm)/2.54;
+                            var Predicted_Y_px=(96 * Predicted_Y_cm)/2.54;
+
+                            Mag1A[count]={x:Actual_X_px,y:Actual_Y_px};
+                            Mag1P[count]={x:Predicted_X_px,y:Predicted_Y_px};
+                            ++count;
+                        });
+                    }
+                });
+                smothingMag1TraceAnimation();
+
+            }
+            function smothingMag1TraceAnimation(){
+                $.ajax({
+                    type:"GET",
+                    url:"Mag1",
+                    dataType:"json",
+                    success:function(response){
+                        for(var i=2;i<Mag1A.length;i++){
+                            var at0=Mag1A[i-2];
+                            var at1=Mag1A[i-1];
+                            var at2=Mag1A[i];
+                            var ax=(at0.x+at1.x+at2.x)/3;
+                            var ay=(at0.y+at1.y+at2.y)/3;
+
+                            var pt0=Mag1P[i-2];
+                            var pt1=Mag1P[i-1];
+                            var pt2=Mag1P[i];
+                            var px=(pt0.x+pt1.x+pt2.x)/3;
+                            var py=(pt0.y+pt1.y+pt2.y)/3;
+
+                            Mag1A[i-1]={x:ax,y:ay};
+                            Mag1P[i-1]={x:px,y:py};
+                        }
+
+                    }
+                });
+                $.ajax({
+                    type:"GET",
+                    url:"Mag1",
+                    dataType:"json",
+                    success:function(response){
+                        animateMag1Actual();
+                        animateMag1predicted();
+                    }
+                });
+            }
+
+
+
+            const Mag2A=[];
+            const Mag2P=[];
+            function fetchMag2TraceAnimation(){
+                $.ajax({
+                    type:"GET",
+                    url:"Mag2",
+                    dataType:"json",
+                    success:function(response){
+                        var count=0;
+                        $.each(response.data,function(key,item){
+
+                            var Actual_X_cm=parseFloat(item.actual_x_distance)/100;
+                            var Actual_Y_cm=parseFloat(item.actual_y_distance)/100;
+
+                            var Predicted_X_cm=parseFloat(item.predicted_x_distance)/100;
+                            var Predicted_Y_cm=parseFloat(item.predicted_y_distance)/100;
+
+                            var Actual_X_px=(96 * Actual_X_cm)/2.54;
+                            var Actual_Y_px=(96 * Actual_Y_cm)/2.54;
+
+                            var Predicted_X_px=(96 * Predicted_X_cm)/2.54;
+                            var Predicted_Y_px=(96 * Predicted_Y_cm)/2.54;
+
+                            Mag2A[count]={x:Actual_X_px,y:Actual_Y_px};
+                            Mag2P[count]={x:Predicted_X_px,y:Predicted_Y_px};
+                            ++count;
+                        });
+                    }
+                });
+                smothingMag2TraceAnimation();
+
+            }
+            function smothingMag2TraceAnimation(){
+                $.ajax({
+                    type:"GET",
+                    url:"Mag2",
+                    dataType:"json",
+                    success:function(response){
+                        for(var i=2;i<Mag2A.length;i++){
+                            var at0=Mag2A[i-2];
+                            var at1=Mag2A[i-1];
+                            var at2=Mag2A[i];
+                            var ax=(at0.x+at1.x+at2.x)/3;
+                            var ay=(at0.y+at1.y+at2.y)/3;
+
+                            var pt0=Mag2P[i-2];
+                            var pt1=Mag2P[i-1];
+                            var pt2=Mag2P[i];
+                            var px=(pt0.x+pt1.x+pt2.x)/3;
+                            var py=(pt0.y+pt1.y+pt2.y)/3;
+
+                            Mag2A[i-1]={x:ax,y:ay};
+                            Mag2P[i-1]={x:px,y:py};
+                        }
+
+                    }
+                });
+                $.ajax({
+                    type:"GET",
+                    url:"Mag2",
+                    dataType:"json",
+                    success:function(response){
+                        animateMag2Actual();
+                        animateMag2predicted();
+                    }
+                });
+            }
+
+
             const RTT1A=[];
             const RTT1P=[];
             function fetchRTT1TraceAnimation(){
@@ -918,6 +1403,143 @@
                     success:function(response){
                         animateRTT2Actual();
                         animateRTT2predicted();
+                    }
+                });
+            }
+
+
+
+            const arrMag1PointsA=[];
+            const arrMag1PointsP=[];
+            function fetchMag1TraceAnimationPoints(){
+                $.ajax({
+                    type:"GET",
+                    url:"Mag1",
+                    dataType:"json",
+                    success:function(response){
+                        var count=0;
+                        $.each(response.data,function(key,item){
+
+                            var Actual_X_cm=parseFloat(item.actual_x_distance)/100;
+                            var Actual_Y_cm=parseFloat(item.actual_y_distance)/100;
+
+                            var Predicted_X_cm=parseFloat(item.predicted_x_distance)/100;
+                            var Predicted_Y_cm=parseFloat(item.predicted_y_distance)/100;
+
+                            var Actual_X_px=(96 * Actual_X_cm)/2.54;
+                            var Actual_Y_px=(96 * Actual_Y_cm)/2.54;
+
+                            var Predicted_X_px=(96 * Predicted_X_cm)/2.54;
+                            var Predicted_Y_px=(96 * Predicted_Y_cm)/2.54;
+
+                            arrMag1PointsA[count]={x:Actual_X_px,y:Actual_Y_px};
+                            arrMag1PointsP[count]={x:Predicted_X_px,y:Predicted_Y_px};
+                            ++count;
+                        });
+                    }
+                });
+                smothingfetchMag1TraceAnimationPoints();
+            }
+            function smothingfetchMag1TraceAnimationPoints(){
+                $.ajax({
+                    type:"GET",
+                    url:"Mag1",
+                    dataType:"json",
+                    success:function(response){
+                        for(var i=2;i<arrMag1PointsA.length;i++){
+                            var at0=arrMag1PointsA[i-2];
+                            var at1=arrMag1PointsA[i-1];
+                            var at2=arrMag1PointsA[i];
+                            var ax=(at0.x+at1.x+at2.x)/3;
+                            var ay=(at0.y+at1.y+at2.y)/3;
+
+                            var pt0=arrMag1PointsP[i-2];
+                            var pt1=arrMag1PointsP[i-1];
+                            var pt2=arrMag1PointsP[i];
+                            var px=(pt0.x+pt1.x+pt2.x)/3;
+                            var py=(pt0.y+pt1.y+pt2.y)/3;
+
+                            arrMag1PointsA[i-1]={x:ax,y:ay};
+                            arrMag1PointsP[i-1]={x:px,y:py};
+                        }
+
+                    }
+                });
+                $.ajax({
+                    type:"GET",
+                    url:"Mag1",
+                    dataType:"json",
+                    success:function(response){
+                        animateMag1ActualPoint();
+                        animateMag1predictedPoint();
+                    }
+                });
+            }
+
+
+            const arrMag2PointsA=[];
+            const arrMag2PointsP=[];
+            function fetchMag2TraceAnimationPoints(){
+                $.ajax({
+                    type:"GET",
+                    url:"Mag2",
+                    dataType:"json",
+                    success:function(response){
+                        var count=0;
+                        $.each(response.data,function(key,item){
+
+                            var Actual_X_cm=parseFloat(item.actual_x_distance)/100;
+                            var Actual_Y_cm=parseFloat(item.actual_y_distance)/100;
+
+                            var Predicted_X_cm=parseFloat(item.predicted_x_distance)/100;
+                            var Predicted_Y_cm=parseFloat(item.predicted_y_distance)/100;
+
+                            var Actual_X_px=(96 * Actual_X_cm)/2.54;
+                            var Actual_Y_px=(96 * Actual_Y_cm)/2.54;
+
+                            var Predicted_X_px=(96 * Predicted_X_cm)/2.54;
+                            var Predicted_Y_px=(96 * Predicted_Y_cm)/2.54;
+
+                            arrMag2PointsA[count]={x:Actual_X_px,y:Actual_Y_px};
+                            arrMag2PointsP[count]={x:Predicted_X_px,y:Predicted_Y_px};
+                            ++count;
+                        });
+                    }
+                });
+                smothingfetchMag2TraceAnimationPoints();
+            }
+            function smothingfetchMag2TraceAnimationPoints(){
+                $.ajax({
+                    type:"GET",
+                    url:"Mag2",
+                    dataType:"json",
+                    success:function(response){
+                        for(var i=2;i<arrMag2PointsA.length;i++){
+                            var at0=arrMag2PointsA[i-2];
+                            var at1=arrMag2PointsA[i-1];
+                            var at2=arrMag2PointsA[i];
+                            var ax=(at0.x+at1.x+at2.x)/3;
+                            var ay=(at0.y+at1.y+at2.y)/3;
+
+                            var pt0=arrMag2PointsP[i-2];
+                            var pt1=arrMag2PointsP[i-1];
+                            var pt2=arrMag2PointsP[i];
+                            var px=(pt0.x+pt1.x+pt2.x)/3;
+                            var py=(pt0.y+pt1.y+pt2.y)/3;
+
+                            arrMag2PointsA[i-1]={x:ax,y:ay};
+                            arrMag2PointsP[i-1]={x:px,y:py};
+                        }
+
+                    }
+                });
+                $.ajax({
+                    type:"GET",
+                    url:"Mag2",
+                    dataType:"json",
+                    success:function(response){
+                        animateMag2ActualPoint();
+                        animateMag2predictedPoint();
                     }
                 });
             }
@@ -1356,6 +1978,69 @@
                 return(waypoints);
             }
 
+
+            var t=1;
+            function animateMag1ActualPoint(){
+                $.ajax({
+                    type:"GET",
+                    url:"Mag1",
+                    dataType:"json",
+                    success:function(response){
+                        var points=calcWaypoints(arrMag1PointsA);
+                        if(t<points.length-1){ requestAnimationFrame(animateMag1ActualPoint); }
+                        drawPoint(ctx, points[t].x,points[t].y, 'blue', 4);
+                        t++;
+                     }
+                });
+
+            }
+            var t=1;
+            function animateMag1predictedPoint(){
+                $.ajax({
+                    type:"GET",
+                    url:"Mag1",
+                    dataType:"json",
+                    success:function(response){
+                        var points=calcWaypoints(arrMag1PointsP);
+                        if(t<points.length-1){ requestAnimationFrame(animateMag1predictedPoint); }
+                        drawPoint(ctx, points[t].x,points[t].y, 'green', 4);
+                        t++;
+                     }
+                });
+
+            }
+
+            var t=1;
+            function animateMag2ActualPoint(){
+                $.ajax({
+                    type:"GET",
+                    url:"Mag2",
+                    dataType:"json",
+                    success:function(response){
+                        var points=calcWaypoints(arrMag2PointsA);
+                        if(t<points.length-1){ requestAnimationFrame(animateMag2ActualPoint); }
+                        drawPoint(ctx, points[t].x,points[t].y, 'blue', 4);
+                        t++;
+                     }
+                });
+
+            }
+            var t=1;
+            function animateMag2predictedPoint(){
+                $.ajax({
+                    type:"GET",
+                    url:"Mag2",
+                    dataType:"json",
+                    success:function(response){
+                        var points=calcWaypoints(arrMag2PointsP);
+                        if(t<points.length-1){ requestAnimationFrame(animateMag2predictedPoint); }
+                        drawPoint(ctx, points[t].x,points[t].y, 'green', 4);
+                        t++;
+                     }
+                });
+
+            }
+
             var t=1;
             function animateRTT1ActualPoint(){
                 $.ajax({
@@ -1417,6 +2102,92 @@
                 });
 
             }
+
+
+            var t=1;
+            function animateMag1Actual(){
+                $.ajax({
+                    type:"GET",
+                    url:"Mag1",
+                    dataType:"json",
+                    success:function(response){
+                        var points=calcWaypoints(Mag1A);
+                        if(t<points.length-1){ requestAnimationFrame(animateMag1Actual); }
+                        ctx.beginPath();
+                        ctx.lineWidth = 3;
+                        ctx.lineCap = "round";
+                        ctx.strokeStyle = 'blue';
+                        ctx.moveTo(points[t-1].x,points[t-1].y);
+                        ctx.lineTo(points[t].x,points[t].y);
+                        ctx.stroke();
+                        t++;
+                     }
+                });
+
+            }
+            var t=1
+            function animateMag1predicted(){
+                $.ajax({
+                    type:"GET",
+                    url:"Mag1",
+                    dataType:"json",
+                    success:function(response){
+                        var points=calcWaypoints(Mag1P);
+                        if(t<points.length-1){ requestAnimationFrame(animateMag1predicted); }
+                        ctx.beginPath();
+                        ctx.lineWidth = 3;
+                        ctx.lineCap = "round";
+                        ctx.strokeStyle = 'green';
+                        ctx.moveTo(points[t-1].x,points[t-1].y);
+                        ctx.lineTo(points[t].x,points[t].y);
+                        ctx.stroke();
+                        t++;
+                     }
+                });
+            }
+
+            var t=1;
+            function animateMag2Actual(){
+                $.ajax({
+                    type:"GET",
+                    url:"Mag2",
+                    dataType:"json",
+                    success:function(response){
+                        var points=calcWaypoints(Mag2A);
+                        if(t<points.length-1){ requestAnimationFrame(animateMag2Actual); }
+                        ctx.beginPath();
+                        ctx.lineWidth = 3;
+                        ctx.lineCap = "round";
+                        ctx.strokeStyle = 'blue';
+                        ctx.moveTo(points[t-1].x,points[t-1].y);
+                        ctx.lineTo(points[t].x,points[t].y);
+                        ctx.stroke();
+                        t++;
+                     }
+                });
+
+            }
+            var t=1
+            function animateMag2predicted(){
+                $.ajax({
+                    type:"GET",
+                    url:"Mag2",
+                    dataType:"json",
+                    success:function(response){
+                        var points=calcWaypoints(Mag2P);
+                        if(t<points.length-1){ requestAnimationFrame(animateMag2predicted); }
+                        ctx.beginPath();
+                        ctx.lineWidth = 3;
+                        ctx.lineCap = "round";
+                        ctx.strokeStyle = 'green';
+                        ctx.moveTo(points[t-1].x,points[t-1].y);
+                        ctx.lineTo(points[t].x,points[t].y);
+                        ctx.stroke();
+                        t++;
+                     }
+                });
+            }
+
 
             var t=1;
             function animateRTT1Actual(){
