@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Imports\DataImport;
 use App\Imports\Mag1Import;
+use App\Imports\Mag2Import;
 use App\Imports\RTT1Import;
 use App\Imports\RTT2Import;
 use App\Imports\Trace2Import;
@@ -44,9 +45,14 @@ class demoController extends Controller
     //     return redirect()->back()->with('message', 'Data Saved Sucessfully!!');
     // }
 
+    // public function uploadData(Request $request)
+    // {
+    //     Excel::import(new Mag1Import,$request->file);
+    //     return redirect()->back()->with('message', 'Data Saved Sucessfully!!');
+    // }
     public function uploadData(Request $request)
     {
-        Excel::import(new Mag1Import,$request->file);
+        Excel::import(new Mag2Import,$request->file);
         return redirect()->back()->with('message', 'Data Saved Sucessfully!!');
     }
 
