@@ -29,6 +29,12 @@ class demoController extends Controller
 
     // public function uploadData(Request $request)
     // {
+    //     Excel::import(new DataImport,$request->file);
+    //     return redirect()->back()->with('message', 'Data Saved Sucessfully!!');
+    // }
+
+    // public function uploadData(Request $request)
+    // {
     //     Excel::import(new Trace2Import,$request->file);
     //     return redirect()->back()->with('message', 'Data Saved Sucessfully!!');
     // }
@@ -50,11 +56,12 @@ class demoController extends Controller
     //     Excel::import(new Mag1Import,$request->file);
     //     return redirect()->back()->with('message', 'Data Saved Sucessfully!!');
     // }
-    public function uploadData(Request $request)
-    {
-        Excel::import(new Mag2Import,$request->file);
-        return redirect()->back()->with('message', 'Data Saved Sucessfully!!');
-    }
+
+    // public function uploadData(Request $request)
+    // {
+    //     Excel::import(new Mag2Import,$request->file);
+    //     return redirect()->back()->with('message', 'Data Saved Sucessfully!!');
+    // }
 
     public function showPointsforJS()
     {
